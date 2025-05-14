@@ -2,7 +2,7 @@
 if ('serviceWorker' in navigator) {
 
   // Try to register the service worker file
-  navigator.serviceWorker.register('service-worker.js')
+  navigator.serviceWorker.register('/frontend/public/service-worker.js')
 
     // If successful, log a confirmation message in the console
     .then(() => console.log('Service Worker registered'))
