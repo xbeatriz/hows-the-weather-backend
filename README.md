@@ -36,7 +36,7 @@ This project involves the development of a full-stack web application as part of
 - Live deployment of the REST API and the web application.
 
 ## Technologies Used
-- Frontend: 
+- Frontend: HTML, CSS JavaScript - PWA
 - Backend: MongoDB, ExpressJS, Mongoose
 
 
