@@ -14,11 +14,24 @@ self.addEventListener('install', event => {
 });
 
 // This event runs every time a request is made (HTML, CSS, image, etc.)
-self.addEventListener('fetch', event => {
+/*self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request).then(cached => {
       return cached || fetch(event.request)
         .catch(() => caches.match('/src/pages/offline.html'));
     })
   );
+});*/
+self.addEventListener('fetch', event => {
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request)
+        .catch(() => caches.match('/src/pages/offline.html'))
+    );
+  } else {
+    event.respondWith(
+      caches.match(event.request)
+        .then(cached => cached || fetch(event.request))
+    );
+  }
 });
