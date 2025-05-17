@@ -1,15 +1,25 @@
 {
-  "name": "backend",
+  "name": "projetoii_isa",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "",
+  "main": "app.js",
   "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "type": "module",
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
-    "express": "^5.1.0"
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^5.1.0",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.13.2",
+    "morgan": "^1.10.0"
   }
 }

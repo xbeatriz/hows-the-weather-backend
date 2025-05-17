@@ -1,0 +1,41 @@
+### Create Sensor
+POST http://localhost:3000/api/sensors
+Authorization: Bearer <your_jwt_token_here>
+Content-Type: application/json
+
+{
+  "type": "temperature",
+  "location": "Sala 1",
+  "status": "active",
+  "update_frequency": "minutes",
+  "last_reading": {
+    "timestamp": "2024-05-16T10:00:00.000Z",
+    "values": {
+      "temperature": 22.5,
+      "humidity": 40,
+      "gas": 0.1
+    }
+  }
+}
+
+### Get All Sensors
+GET http://localhost:3000/api/sensors
+Authorization: Bearer <your_jwt_token_here>
+
+### Get One Sensor by ID
+GET http://localhost:3000/api/sensors/<sensor_id_here>
+Authorization: Bearer <your_jwt_token_here>
+
+### Update Sensor
+PATCH http://localhost:3000/api/sensors/<sensor_id_here>
+Authorization: Bearer <your_jwt_token_here>
+Content-Type: application/json
+
+{
+  "status": "inative",
+  "location": "Sala 2"
+}
+
+### Delete Sensor
+DELETE http://localhost:3000/api/sensors/<sensor_id_here>
+Authorization: Bearer <your_jwt_token_here>

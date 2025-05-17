@@ -1,0 +1,35 @@
+### Register User
+POST http://localhost:3000/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Jane Doe",
+  "email": "janedoe@example.com",
+  "password": "securepassword"
+}
+
+### Login User
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "janedoe@example.com",
+  "password": "securepassword"
+}
+
+### Get User Data
+GET http://localhost:3000/api/auth/me
+Authorization: Bearer <your_jwt_token_here>
+
+### EDIT LOGGED USER
+PATCH http://localhost:3000/api/auth/me
+Authorization: Bearer <your_jwt_token_here>
+Content-Type: application/json
+
+{
+  "name": "new_name_yey"
+}
+
+### DELETE LOGGED USER
+DELETE http://localhost:3000/api/auth/me
+Authorization: Bearer <your_jwt_token_here>
