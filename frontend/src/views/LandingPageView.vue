@@ -1,0 +1,492 @@
+<template>
+  <div class="landing-page">
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="navbar-container">
+        <div class="navbar-logo">
+          <h1>How's The Weather</h1>
+        </div>
+        <div class="navbar-links">
+          <a href="#home">Home</a>
+          <a href="#features">Features</a>
+          <a href="#about">About</a>
+          <a href="#contact">Contact</a>
+        </div>
+        <div class="navbar-mobile-toggle" @click="toggleMobileMenu">
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </div>
+      </div>
+      <div class="mobile-menu" :class="{ 'active': mobileMenuActive }">
+        <a href="#home" @click="closeMobileMenu">Home</a>
+        <a href="#features" @click="closeMobileMenu">Features</a>
+        <a href="#about" @click="closeMobileMenu">About</a>
+        <a href="#contact" @click="closeMobileMenu">Contact</a>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div id="home" class="hero-section">
+      <div class="hero-content">
+        <h1>Check the Weather Anywhere</h1>
+        <p>Get accurate and real-time weather forecasts for any location</p>
+        <div class="search-container">
+          <input 
+            type="text" 
+            placeholder="Enter city name..." 
+            v-model="searchQuery"
+            @keyup.enter="searchWeather"
+          />
+          <button @click="searchWeather">Search</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Features Section -->
+    <div id="features" class="features-section">
+      <h2>Features</h2>
+      <div class="features-container">
+        <div class="feature-card">
+          <div class="feature-icon">🌦️</div>
+          <h3>Real-time Forecasts</h3>
+          <p>Get up-to-date weather information for any location worldwide</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📱</div>
+          <h3>Responsive Design</h3>
+          <p>Access weather data on any device with our mobile-friendly interface</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔍</div>
+          <h3>Detailed Analysis</h3>
+          <p>View comprehensive weather data including temperature, humidity, and wind speed</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>How's The Weather</h3>
+          <p>Your reliable source for weather forecasts worldwide</p>
+        </div>
+        <div class="footer-section">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-section" id="contact">
+          <h3>Contact Us</h3>
+          <p>Email: info@howstheweather.com</p>
+          <p>Phone: +1 234 567 890</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; {{ new Date().getFullYear() }} How's The Weather. All Rights Reserved.</p>
+      </div>
+    </footer>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'LandingPageView',
+  data() {
+    return {
+      mobileMenuActive: false,
+      searchQuery: ''
+    }
+  },
+  methods: {
+    toggleMobileMenu() {
+      this.mobileMenuActive = !this.mobileMenuActive;
+    },
+    closeMobileMenu() {
+      this.mobileMenuActive = false;
+    },
+    searchWeather() {
+      if (this.searchQuery.trim()) {
+        // Add your weather search logic here
+        console.log(`Searching weather for: ${this.searchQuery}`);
+        // You can redirect to a weather details page or show results
+        // this.$router.push({ name: 'WeatherDetails', params: { city: this.searchQuery } });
+      }
+    }
+  }
+}
+</script>
+
+<style scoped>
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.landing-page {
+  font-family: 'Arial', sans-serif;
+  color: #333;
+  min-height: 100vh;
+  width: 100%;
+  max-width: 100vw;
+  margin: 0;
+  padding: 0;
+  display: block;
+}
+
+/* Navbar Styles */
+.navbar {
+  background-color: #2c3e50;
+  color: white;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  height: 60px; /* Fixed height for consistent spacing */
+}
+
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 5%;
+}
+
+.navbar-logo h1 {
+  font-size: 1.5rem;
+  cursor: pointer;
+  margin: 0;
+}
+
+.navbar-links {
+  display: flex;
+}
+
+.navbar-links a {
+  color: white;
+  text-decoration: none;
+  margin-left: 1.5rem;
+  transition: color 0.3s;
+}
+
+.navbar-links a:hover {
+  color: #3498db;
+}
+
+.navbar-mobile-toggle {
+  display: none;
+  cursor: pointer;
+}
+
+.bar {
+  width: 25px;
+  height: 3px;
+  background-color: white;
+  margin: 5px 0;
+  transition: 0.4s;
+}
+
+.mobile-menu {
+  display: none;
+  flex-direction: column;
+  background-color: #2c3e50;
+  width: 100%;
+  text-align: center;
+  padding: 1rem 0;
+  transform: translateY(-100%);
+  transition: transform 0.3s ease-in-out;
+}
+
+.mobile-menu.active {
+  transform: translateY(0);
+  display: flex;
+}
+
+.mobile-menu a {
+  color: white;
+  text-decoration: none;
+  padding: 1rem 0;
+  transition: color 0.3s;
+}
+
+.mobile-menu a:hover {
+  color: #3498db;
+}
+
+/* Hero Section Styles */
+.hero-section {
+  height: 100%;
+  width: 100%;
+  background-color: #000; /* Fallback */
+  background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1534088568595-a066f410bcda?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1951&q=80');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: white;
+  margin: 24px;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.hero-content {
+  max-width: 800px;
+  padding: 2rem;
+}
+
+.hero-content h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+.search-container {
+  display: flex;
+  justify-content: center;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.search-container input {
+  flex: 1;
+  padding: 0.8rem;
+  border: none;
+  outline: none;
+  border-radius: 4px 0 0 4px;
+  font-size: 1rem;
+}
+
+.search-container button {
+  padding: 0.8rem 1.2rem;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+}
+
+.search-container button:hover {
+  background-color: #2980b9;
+}
+
+/* Features Section Styles */
+.features-section {
+  padding: 5rem 0;
+  text-align: center;
+  background-color: #f9f9f9;
+  width: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+.features-section h2 {
+  font-size: 2.5rem;
+  margin-bottom: 3rem;
+  position: relative;
+  padding: 0 2rem;
+}
+
+.features-section h2:after {
+  content: "";
+  position: absolute;
+  bottom: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 3px;
+  background-color: #3498db;
+}
+
+.features-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.feature-card {
+  flex: 1;
+  min-width: 300px;
+  background-color: white;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s;
+}
+
+.feature-card:hover {
+  transform: translateY(-10px);
+}
+
+.feature-icon {
+  font-size: 3rem;
+  margin-bottom: 1.5rem;
+}
+
+.feature-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.feature-card p {
+  color: #666;
+  line-height: 1.6;
+}
+
+/* Footer Styles */
+.footer {
+  background-color: #2c3e50;
+  color: white;
+  padding: 3rem 2rem 1rem;
+  width: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+.footer-content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: 2rem;
+}
+
+.footer-section {
+  flex: 1;
+  min-width: 250px;
+}
+
+.footer-section h3 {
+  font-size: 1.3rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.footer-section h3:after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  width: 30px;
+  height: 2px;
+  background-color: #3498db;
+}
+
+.footer-section p {
+  margin-bottom: 0.8rem;
+}
+
+.footer-section ul {
+  list-style: none;
+}
+
+.footer-section ul li {
+  margin-bottom: 0.5rem;
+}
+
+.footer-section ul li a {
+  color: #ccc;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.footer-section ul li a:hover {
+  color: #3498db;
+}
+
+.footer-bottom {
+  text-align: center;
+  padding-top: 2rem;
+  margin-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .navbar-links {
+    display: none;
+  }
+
+  .navbar-mobile-toggle {
+    display: block;
+  }
+
+  .hero-content h1 {
+    font-size: 2.3rem;
+  }
+
+  .search-container {
+    flex-direction: column;
+  }
+
+  .search-container input {
+    border-radius: 4px 4px 0 0;
+  }
+
+  .search-container button {
+    border-radius: 0 0 4px 4px;
+  }
+
+  .feature-card {
+    min-width: 100%;
+  }
+
+  .footer-section {
+    min-width: 100%;
+    margin-bottom: 2rem;
+  }
+  
+  .hero-section,
+  .features-section,
+  .footer {
+    width: 100%;
+    margin: 0;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  
+  .features-section {
+    padding: 3rem 1rem;
+  }
+  
+  .footer {
+    padding: 2rem 1rem 1rem;
+  }
+}
+
+/* Add this to reset any potential conflicts */
+@media (min-width: 1024px) {
+  .hero-section,
+  .features-section,
+  .footer {
+    width: 100vw;
+    max-width: 100vw;
+    margin: 0;
+    left: 0;
+    right: 0;
+  }
+}
+
+
+</style>
