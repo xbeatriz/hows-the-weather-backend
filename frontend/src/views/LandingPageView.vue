@@ -1,30 +1,7 @@
 <template>
   <div class="landing-page">
-    <!-- Navbar -->
-    <nav class="navbar">
-      <div class="navbar-container">
-        <div class="navbar-logo">
-          <h1>How's The Weather</h1>
-        </div>
-        <div class="navbar-links">
-          <a href="#home">Home</a>
-          <a href="#features">Features</a>
-          <a href="#about">About</a>
-          <a href="#contact">Contact</a>
-        </div>
-        <div class="navbar-mobile-toggle" @click="toggleMobileMenu">
-          <div class="bar"></div>
-          <div class="bar"></div>
-          <div class="bar"></div>
-        </div>
-      </div>
-      <div class="mobile-menu" :class="{ 'active': mobileMenuActive }">
-        <a href="#home" @click="closeMobileMenu">Home</a>
-        <a href="#features" @click="closeMobileMenu">Features</a>
-        <a href="#about" @click="closeMobileMenu">About</a>
-        <a href="#contact" @click="closeMobileMenu">Contact</a>
-      </div>
-    </nav>
+    <!-- Use the Navbar component -->
+    <Navbar />
 
     <!-- Hero Section -->
     <div id="home" class="hero-section">
@@ -95,21 +72,21 @@
 </template>
 
 <script>
+// Import Navbar component
+import Navbar from '@/components/Navbar.vue';
+
 export default {
   name: 'LandingPageView',
+  // Register the Navbar component
+  components: {
+    Navbar
+  },
   data() {
     return {
-      mobileMenuActive: false,
       searchQuery: ''
     }
   },
   methods: {
-    toggleMobileMenu() {
-      this.mobileMenuActive = !this.mobileMenuActive;
-    },
-    closeMobileMenu() {
-      this.mobileMenuActive = false;
-    },
     searchWeather() {
       if (this.searchQuery.trim()) {
         // Add your weather search logic here
@@ -141,86 +118,6 @@ export default {
   display: block;
 }
 
-/* Navbar Styles */
-.navbar {
-  background-color: #2c3e50;
-  color: white;
-  position: fixed;
-  width: 100%;
-  top: 0;
-  left: 0;
-  z-index: 1000;
-  height: 60px; /* Fixed height for consistent spacing */
-}
-
-.navbar-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 5%;
-}
-
-.navbar-logo h1 {
-  font-size: 1.5rem;
-  cursor: pointer;
-  margin: 0;
-}
-
-.navbar-links {
-  display: flex;
-}
-
-.navbar-links a {
-  color: white;
-  text-decoration: none;
-  margin-left: 1.5rem;
-  transition: color 0.3s;
-}
-
-.navbar-links a:hover {
-  color: #3498db;
-}
-
-.navbar-mobile-toggle {
-  display: none;
-  cursor: pointer;
-}
-
-.bar {
-  width: 25px;
-  height: 3px;
-  background-color: white;
-  margin: 5px 0;
-  transition: 0.4s;
-}
-
-.mobile-menu {
-  display: none;
-  flex-direction: column;
-  background-color: #2c3e50;
-  width: 100%;
-  text-align: center;
-  padding: 1rem 0;
-  transform: translateY(-100%);
-  transition: transform 0.3s ease-in-out;
-}
-
-.mobile-menu.active {
-  transform: translateY(0);
-  display: flex;
-}
-
-.mobile-menu a {
-  color: white;
-  text-decoration: none;
-  padding: 1rem 0;
-  transition: color 0.3s;
-}
-
-.mobile-menu a:hover {
-  color: #3498db;
-}
-
 /* Hero Section Styles */
 .hero-section {
   height: 100%;
@@ -242,17 +139,17 @@ export default {
 
 .hero-content {
   max-width: 800px;
-  padding: 2rem;
+  padding: 32px;
 }
 
 .hero-content h1 {
-  font-size: 3rem;
-  margin-bottom: 1rem;
+  font-size: 48px;
+  margin-bottom: 16px;
 }
 
 .hero-content p {
-  font-size: 1.2rem;
-  margin-bottom: 2rem;
+  font-size: 19px;
+  margin-bottom: 32px;
 }
 
 .search-container {
@@ -264,21 +161,21 @@ export default {
 
 .search-container input {
   flex: 1;
-  padding: 0.8rem;
+  padding: 13px;
   border: none;
   outline: none;
   border-radius: 4px 0 0 4px;
-  font-size: 1rem;
+  font-size: 16px;
 }
 
 .search-container button {
-  padding: 0.8rem 1.2rem;
+  padding: 13px 19px;
   background-color: #3498db;
   color: white;
   border: none;
   border-radius: 0 4px 4px 0;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 16px;
   transition: background-color 0.3s;
 }
 
@@ -288,7 +185,7 @@ export default {
 
 /* Features Section Styles */
 .features-section {
-  padding: 5rem 0;
+  padding: 80px 0;
   text-align: center;
   background-color: #f9f9f9;
   width: 100%;
@@ -297,10 +194,10 @@ export default {
 }
 
 .features-section h2 {
-  font-size: 2.5rem;
-  margin-bottom: 3rem;
+  font-size: 40px;
+  margin-bottom: 48px;
   position: relative;
-  padding: 0 2rem;
+  padding: 0 32px;
 }
 
 .features-section h2:after {
@@ -318,7 +215,7 @@ export default {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 2rem;
+  gap: 32px;
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -328,7 +225,7 @@ export default {
   min-width: 300px;
   background-color: white;
   border-radius: 8px;
-  padding: 2rem;
+  padding: 32px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s;
 }
@@ -338,13 +235,13 @@ export default {
 }
 
 .feature-icon {
-  font-size: 3rem;
-  margin-bottom: 1.5rem;
+  font-size: 48px;
+  margin-bottom: 24px;
 }
 
 .feature-card h3 {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
+  font-size: 24px;
+  margin-bottom: 16px;
 }
 
 .feature-card p {
@@ -356,7 +253,7 @@ export default {
 .footer {
   background-color: #2c3e50;
   color: white;
-  padding: 3rem 2rem 1rem;
+  padding: 48px 32px 16px;
   width: 100%;
   margin: 0;
   overflow: hidden;
@@ -368,7 +265,7 @@ export default {
   justify-content: space-between;
   max-width: 1200px;
   margin: 0 auto;
-  gap: 2rem;
+  gap: 32px;
 }
 
 .footer-section {
@@ -377,8 +274,8 @@ export default {
 }
 
 .footer-section h3 {
-  font-size: 1.3rem;
-  margin-bottom: 1.5rem;
+  font-size: 21px;
+  margin-bottom: 24px;
   position: relative;
 }
 
@@ -393,7 +290,7 @@ export default {
 }
 
 .footer-section p {
-  margin-bottom: 0.8rem;
+  margin-bottom: 13px;
 }
 
 .footer-section ul {
@@ -401,7 +298,7 @@ export default {
 }
 
 .footer-section ul li {
-  margin-bottom: 0.5rem;
+  margin-bottom: 8px;
 }
 
 .footer-section ul li a {
@@ -416,8 +313,8 @@ export default {
 
 .footer-bottom {
   text-align: center;
-  padding-top: 2rem;
-  margin-top: 2rem;
+  padding-top: 32px;
+  margin-top: 32px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -432,7 +329,7 @@ export default {
   }
 
   .hero-content h1 {
-    font-size: 2.3rem;
+    font-size: 37px;
   }
 
   .search-container {
@@ -453,7 +350,7 @@ export default {
 
   .footer-section {
     min-width: 100%;
-    margin-bottom: 2rem;
+    margin-bottom: 32px;
   }
   
   .hero-section,
@@ -467,15 +364,15 @@ export default {
   }
   
   .features-section {
-    padding: 3rem 1rem;
+    padding: 48px 16px;
   }
   
   .footer {
-    padding: 2rem 1rem 1rem;
+    padding: 32px 16px 16px;
   }
 }
 
-/* Add this to reset any potential conflicts */
+/* Added this to reset any potential conflicts */
 @media (min-width: 1024px) {
   .hero-section,
   .features-section,
