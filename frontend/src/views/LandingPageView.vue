@@ -109,7 +109,7 @@ export default {
 
 .landing-page {
   font-family: 'Arial', sans-serif;
-  color: #333;
+  color: #141E46;
   min-height: 100vh;
   width: 100%;
   max-width: 100vw;
@@ -122,7 +122,7 @@ export default {
 .hero-section {
   height: 100%;
   width: 100%;
-  background-color: #000; /* Fallback */
+  background-color: #141E46; /* Fallback */
   background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1534088568595-a066f410bcda?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1951&q=80');
   background-position: center;
   background-repeat: no-repeat;
@@ -170,7 +170,7 @@ export default {
 
 .search-container button {
   padding: 13px 19px;
-  background-color: #3498db;
+  background-color: #41B06E;
   color: white;
   border: none;
   border-radius: 0 4px 4px 0;
@@ -180,7 +180,7 @@ export default {
 }
 
 .search-container button:hover {
-  background-color: #2980b9;
+  background-color: #142A83FF;
 }
 
 /* Features Section Styles */
@@ -208,7 +208,7 @@ export default {
   transform: translateX(-50%);
   width: 50px;
   height: 3px;
-  background-color: #3498db;
+  background-color: #41B06E;
 }
 
 .features-container {
@@ -251,7 +251,7 @@ export default {
 
 /* Footer Styles */
 .footer {
-  background-color: #2c3e50;
+  background-color: #141E46;
   color: white;
   padding: 48px 32px 16px;
   width: 100%;
@@ -286,7 +286,7 @@ export default {
   left: 0;
   width: 30px;
   height: 2px;
-  background-color: #3498db;
+  background-color: #41B06E;
 }
 
 .footer-section p {
