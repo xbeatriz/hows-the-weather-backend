@@ -12,7 +12,7 @@
         <a href="#about">About</a>
         <a href="#contact">Contact</a>
         <router-link to="/login" class="btn-login">Login</router-link>
-        <a href="#signup" class="btn-signup">Sign Up</a>
+        <router-link to="/signup" class="btn-singup">Sing Up</router-link>
       </div>
       <div class="navbar-mobile-toggle" @click="toggleMobileMenu">
         <div class="bar"></div>
