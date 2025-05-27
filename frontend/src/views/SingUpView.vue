@@ -46,7 +46,7 @@
         </div>
         
         <div class="login-image-section">
-          <img src="@/assets/Dayflowchill.png" alt="Sign Up" class="login-illustration">
+          <img src="@/assets/undraw_weather.svg" alt="Sign Up" class="login-illustration">
         </div>
       </div>
     </div>
@@ -132,7 +132,7 @@ export default {
 
 .login-image-section {
   flex: 1;
-  background-color: #FFF5E0;
+  background-color: rgb(107, 201, 144);
   display: flex;
   justify-content: center;
   align-items: center;
