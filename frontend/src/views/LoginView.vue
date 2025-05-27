@@ -376,9 +376,7 @@ input[type="password"]:focus {
   }
   
   .login-image-section {
-    order: -1;
-    height: 200px; /* Fixed height for the image section on mobile */
-    min-height: auto;
+    display: none; /* Hide the image section on mobile screens */
   }
   
   .login-form-section {
@@ -400,8 +398,8 @@ input[type="password"]:focus {
     padding: 15px;
   }
   
-  .login-image-section {
-    height: 150px; /* Smaller height on very small screens */
-  }
+  /* .login-image-section {
+    height: 150px; 
+  } */
 }
 </style>

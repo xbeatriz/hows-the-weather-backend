@@ -116,11 +116,13 @@ export default {
 }
 
 .login-card {
-  display: flex;
-  width:50%;
+   display: flex;
+  width: 80%;
+  max-width: 1000px;
   background-color: white;
   border-radius: 12px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
 }
 
 .login-form-section {
@@ -268,8 +270,7 @@ input:focus {
   }
 
   .login-image-section {
-    order: -1;
-    height: 200px;
+    display: none; /* Hide image section on mobile */
   }
 
   .login-form-section {
