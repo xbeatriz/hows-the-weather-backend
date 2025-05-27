@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="login-view">
     <Navbar />
     <div class="login-container">
       <div class="login-card">
@@ -9,7 +9,14 @@
           
           <div class="form-group">
             <label for="email">Email Address</label>
-            <input type="email" id="email" v-model="email" placeholder="you@example.com">
+            <input 
+              type="email" 
+              id="email" 
+              v-model="email" 
+              placeholder="you@example.com"
+              :class="{ 'input-error': errors.email }"
+            >
+            <span class="error-message" v-if="errors.email">{{ errors.email }}</span>
           </div>
           
           <div class="form-group">
@@ -17,7 +24,14 @@
               <label for="password">Password</label>
               <a href="#" class="forgot-link">Forgot Password?</a>
             </div>
-            <input type="password" id="password" v-model="password" placeholder="Enter 6 character or more">
+            <input 
+              type="password" 
+              id="password" 
+              v-model="password" 
+              placeholder="Enter 6 character or more"
+              :class="{ 'input-error': errors.password }"
+            >
+            <span class="error-message" v-if="errors.password">{{ errors.password }}</span>
           </div>
           
           <div class="remember-me">
@@ -25,7 +39,10 @@
             <label for="remember">Remember me</label>
           </div>
           
-          <button @click="login" class="login-button">LOGIN</button>
+          <button @click="login" class="login-button" :disabled="isLoading">
+            <span v-if="!isLoading">LOGIN</span>
+            <span v-else>LOGGING IN...</span>
+          </button>
           
           <div class="or-separator">
             <span>Or login with</span>
@@ -63,14 +80,63 @@ export default {
     return {
       email: '',
       password: '',
-      rememberMe: false
+      rememberMe: false,
+      isLoading: false,
+      errors: {
+        email: '',
+        password: ''
+      }
     }
   },
   methods: {
-    login() {
-      // Here you would implement the actual login logic
-      console.log('Login attempted with:', this.email);
-      // For now we'll just log the attempt
+    validateForm() {
+      let isValid = true;
+      this.errors = {
+        email: '',
+        password: ''
+      };
+      
+      // Email validation
+      if (!this.email) {
+        this.errors.email = 'Email is required';
+        isValid = false;
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email)) {
+        this.errors.email = 'Please enter a valid email address';
+        isValid = false;
+      }
+      
+      // Password validation
+      if (!this.password) {
+        this.errors.password = 'Password is required';
+        isValid = false;
+      } else if (this.password.length < 6) {
+        this.errors.password = 'Password must be at least 6 characters';
+        isValid = false;
+      }
+      
+      return isValid;
+    },
+    async login() {
+      if (!this.validateForm()) return;
+      
+      this.isLoading = true;
+      
+      try {
+        // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        console.log('Login attempted with:', this.email);
+        
+        // Here you would implement the actual login logic with your API
+        // const response = await authService.login(this.email, this.password);
+        
+        // Redirect after successful login
+        // this.$router.push('/dashboard');
+      } catch (error) {
+        console.error('Login failed:', error);
+        // Handle login error
+      } finally {
+        this.isLoading = false;
+      }
     }
   }
 }
@@ -84,13 +150,23 @@ export default {
   box-sizing: border-box;
 }
 
+.login-view{
+  font-family: 'Arial', sans-serif;
+  width: 100%;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  overflow-x: hidden;
+}
+
 .login-container {
   width: 100vw;
   min-height: 100vh; 
   display: flex;
   justify-content: center;
   align-items: center;
-  background-image: url('@/assets/wallpaper.jpg'); /* Use wallpaper from assets */
+  background-image: url('@/assets/wallpaper.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -99,10 +175,12 @@ export default {
 
 .login-card {
   display: flex;
-  width:50%;
+  width: 80%;
+  max-width: 1000px;
   background-color: white;
   border-radius: 12px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
 }
 
 .login-form-section {
@@ -222,6 +300,11 @@ input[type="password"]:focus {
   background-color: #309659FF;
 }
 
+.login-button:disabled {
+  background-color: #a0c9b1;
+  cursor: not-allowed;
+}
+
 .or-separator {
   display: flex;
   align-items: center;
@@ -274,10 +357,22 @@ input[type="password"]:focus {
   height: 18px;
 }
 
+.input-error {
+  border-color: #f44336 !important;
+}
+
+.error-message {
+  color: #f44336;
+  font-size: 12px;
+  margin-top: 4px;
+  display: block;
+}
+
 @media (max-width: 768px) {
   .login-card {
     flex-direction: column;
-    max-height: none; /* Remove max-height on mobile */
+    width: 95%;
+    max-height: none;
   }
   
   .login-image-section {
@@ -301,7 +396,7 @@ input[type="password"]:focus {
     padding: 10px;
   }
   
-  .login-form-section {
+  .login-form_section {
     padding: 15px;
   }
   

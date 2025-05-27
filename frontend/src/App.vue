@@ -11,6 +11,7 @@ export default {
 </script>
 
 <style>
+/* Make sure there are no global styles limiting width */
 * {
   margin: 0;
   padding: 0;
@@ -23,11 +24,21 @@ html, body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+  background-color: #f5f7fa;
 }
 
 #app {
-  width: 100%;
+  width: 100vw;
   min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* Remove any width constraints that might be added by other CSS */
+.container, .container-fluid {
+  width: 100%;
+  max-width: none;
   margin: 0;
   padding: 0;
 }

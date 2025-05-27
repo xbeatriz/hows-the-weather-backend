@@ -100,29 +100,30 @@ export default {
 </script>
 
 <style scoped>
-/* Global Styles */
+/* Reset and base styles */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+/* Landing page container */
 .landing-page {
   font-family: 'Arial', sans-serif;
   color: #141E46;
-  min-height: 100vh;
   width: 100%;
-  max-width: 100vw;
-  margin: 0;
-  padding: 0;
-  display: block;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  overflow-x: hidden;
 }
 
-/* Hero Section Styles */
+/* Hero Section */
 .hero-section {
-  height: 100%;
+  min-height: 100vh;
   width: 100%;
-  background-color: #141E46; /* Fallback */
+  background-color: #141E46; 
   background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1534088568595-a066f410bcda?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1951&q=80');
   background-position: center;
   background-repeat: no-repeat;
@@ -132,9 +133,22 @@ export default {
   align-items: center;
   text-align: center;
   color: white;
-  margin: 24px;
-  padding: 24px;
-  box-sizing: border-box;
+}
+
+/* Features Section */
+.features-section {
+  padding: 80px 0;
+  text-align: center;
+  background-color: #f9f9f9;
+  width: 100%;
+}
+
+/* Footer */
+.footer {
+  background-color: #141E46;
+  color: white;
+  padding: 48px 0 16px;
+  width: 100%;
 }
 
 .hero-content {
@@ -189,8 +203,6 @@ export default {
   text-align: center;
   background-color: #f9f9f9;
   width: 100%;
-  margin: 0;
-  overflow: hidden;
 }
 
 .features-section h2 {
@@ -253,10 +265,8 @@ export default {
 .footer {
   background-color: #141E46;
   color: white;
-  padding: 48px 32px 16px;
+  padding: 48px 0 16px;
   width: 100%;
-  margin: 0;
-  overflow: hidden;
 }
 
 .footer-content {
@@ -353,37 +363,10 @@ export default {
     margin-bottom: 32px;
   }
   
-  .hero-section,
-  .features-section,
-  .footer {
-    width: 100%;
+  .hero-section {
+    height: 100vh;
+    padding: 24px;
     margin: 0;
-    padding-left: 0;
-    padding-right: 0;
-    box-sizing: border-box;
-  }
-  
-  .features-section {
-    padding: 48px 16px;
-  }
-  
-  .footer {
-    padding: 32px 16px 16px;
   }
 }
-
-/* Added this to reset any potential conflicts */
-@media (min-width: 1024px) {
-  .hero-section,
-  .features-section,
-  .footer {
-    width: 100vw;
-    max-width: 100vw;
-    margin: 0;
-    left: 0;
-    right: 0;
-  }
-}
-
-
 </style>

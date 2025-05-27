@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="signup-view">
     <Navbar />
     <div class="login-container">
       <div class="login-card">
@@ -89,6 +89,17 @@ export default {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+.signup-view {
+  font-family: 'Arial', sans-serif;
+  color: #141E46;
+  width: 100%;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  overflow-x: hidden;
 }
 
 .login-container {

@@ -33,3 +33,18 @@ a,
     padding: 0 2rem;
   }
 }
+
+/* Temporary icon styling until Font Awesome is installed */
+.icon-placeholder {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1em;
+  height: 1em;
+  font-size: inherit;
+  vertical-align: -0.125em;
+}
+
+.fas {
+  font-family: monospace;
+}
