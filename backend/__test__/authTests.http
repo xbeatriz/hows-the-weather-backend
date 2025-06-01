@@ -19,7 +19,7 @@ Content-Type: application/json
 
 ### Get User Data
 GET http://localhost:3000/api/auth/me
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MjhkYTAwZTZjZWFlMTZhMmFmYjg1NiIsImlhdCI6MTc0NzUyMTI5OSwiZXhwIjoxNzUwMTEzMjk5fQ.cJ6TlKrQqZiOsb-obHQvTPYl_xHvOQc5N6_PQUjugGU
+Authorization: Bearer <your_jwt_token_here>
 
 ### EDIT LOGGED USER
 PATCH http://localhost:3000/api/auth/me
