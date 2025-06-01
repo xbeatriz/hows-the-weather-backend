@@ -1,23 +1,14 @@
 ### Create Sensor
 POST http://localhost:3000/api/sensors
-Authorization: Bearer <your_jwt_token_here>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4M2MxZTA5MGM5ODU1ODMxODhjOGI4NSIsImlhdCI6MTc0ODc3MTYxMiwiZXhwIjoxNzUxMzYzNjEyfQ.gK-0M17kWRKK4ho6_MtjBQtDCWzBaxCO2P0a1bZ4ySg
 Content-Type: application/json
 
 {
   "type": "temperature",
-  "location": "Sala 1",
+  "location": "Lisboa",
   "status": "active",
-  "update_frequency": "minutes",
-  "last_reading": {
-    "timestamp": "2024-05-16T10:00:00.000Z",
-    "values": {
-      "temperature": 22.5,
-      "humidity": 40,
-      "gas": 0.1
-    }
-  }
+  "update_frequency": "hours"
 }
-
 ### Get All Sensors
 GET http://localhost:3000/api/sensors
 Authorization: Bearer <your_jwt_token_here>

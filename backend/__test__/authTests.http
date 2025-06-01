@@ -55,7 +55,7 @@ Authorization: Bearer <your_admin_jwt_token>
 Content-Type: application/json
 
 {
-  "name": "Updated Name",
+  "name": "Updated Admin Name",
   "location": "Porto, Portugal"
 }
 

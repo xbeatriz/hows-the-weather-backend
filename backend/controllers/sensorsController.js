@@ -1,13 +1,32 @@
-import sensorService from "../services/sensorService.js";
+import Sensor from "../models/Sensor.js";
 import AppError from "../utils/errorHandler.js";
 
-class sensorController {
+class SensorController {
   async createSensor(req, res, next) {
     try {
-      const newSensor = await sensorService.createSensor(req.body);
+      const { type, location, status, update_frequency } = req.body;
+
+      if (!type) return next(new AppError("The type field is required.", 400));
+      if (!location)
+        return next(new AppError("The location field is required.", 400));
+      if (!status)
+        return next(new AppError("The status cannot be empty.", 400));
+      if (!update_frequency)
+        return next(
+          new AppError("The update_frequency field cannot be empty.", 400)
+        );
+
+      const newSensor = await Sensor.create({
+        type,
+        location,
+        status,
+        update_frequency,
+      });
       res.status(201).json({
         status: "success",
+        message: "Sensor created successfully",
         data: { sensor: newSensor },
+        
       });
     } catch (error) {
       next(error);
@@ -16,7 +35,7 @@ class sensorController {
 
   async getAllSensors(req, res, next) {
     try {
-      const sensors = await sensorService.getAllSensors();
+      const sensors = await Sensor.find();
       res.status(200).json({
         status: "success",
         results: sensors.length,
@@ -29,10 +48,8 @@ class sensorController {
 
   async getSensorById(req, res, next) {
     try {
-      const sensor = await sensorService.getSensorById(req.params.id);
-      if (!sensor) {
-        return next(new AppError("Sensor not found", 404));
-      }
+      const sensor = await Sensor.findById(req.params.id);
+      if (!sensor) return next(new AppError("Sensor not found", 404));
 
       res.status(200).json({
         status: "success",
@@ -42,15 +59,15 @@ class sensorController {
       next(error);
     }
   }
+
   async updateSensor(req, res, next) {
     try {
-      const updatedSensor = await sensorService.updateSensor(
+      const updatedSensor = await Sensor.findByIdAndUpdate(
         req.params.id,
-        req.body
+        req.body,
+        { new: true, runValidators: true }
       );
-      if (!updatedSensor) {
-        return next(new AppError("Sensor not found", 404));
-      }
+      if (!updatedSensor) return next(new AppError("Sensor not found", 404));
 
       res.status(200).json({
         status: "success",
@@ -63,15 +80,17 @@ class sensorController {
 
   async deleteSensor(req, res, next) {
     try {
-      const deleted = await sensorService.deleteSensor(req.params.id);
-      if (!deleted) {
-        return next(new AppError("Sensor not found", 404));
-      }
+      const sensor = await Sensor.findByIdAndDelete(req.params.id);
+      if (!sensor) return next(new AppError("Sensor not found", 404));
 
-      res.status(204).json({ status: "success", data: null });
+      res.status(200).json({
+        status: "success",
+        message: "Sensor deleted successfully",
+      });
     } catch (error) {
       next(error);
     }
   }
 }
-export default new sensorController();
+
+export default new SensorController();
