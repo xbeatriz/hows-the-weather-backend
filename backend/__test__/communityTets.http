@@ -1,0 +1,75 @@
+### Community
+
+
+### ADMIN ONLY
+
+### create community
+POST http://localhost:3000/api/communities
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4M2MxZTA5MGM5ODU1ODMxODhjOGI4NSIsImlhdCI6MTc0ODc3NTAzMiwiZXhwIjoxNzUxMzY3MDMyfQ.okVsVzEQbnkZuoT-vLrCH-oj3723WPEbmAY2IoXtX_8
+Content-Type: application/json
+
+{
+  "location": "Porto",
+  "members_count": 150
+}
+
+### update community 
+PATCH http://localhost:3000/api/communities/<community_id>
+Authorization: Bearer <admin_jwt_token>
+Content-Type: application/json
+
+{
+  "members_count": 200
+}
+
+### delete community 
+DELETE http://localhost:3000/api/communities/<community_id>
+Authorization: Bearer <admin_jwt_token>
+
+
+
+### USER
+
+### get all communities 
+GET http://localhost:3000/api/communities
+Authorization: Bearer <jwt_token>
+
+### community id
+GET http://localhost:3000/api/communities/<community_id>
+Authorization: Bearer <user_jwt_token>
+
+### all posts approved
+GET http://localhost:3000/api/communities/<community_id>/posts
+Authorization: Bearer <user_jwt_token>
+
+
+### cerate post 
+POST http://localhost:3000/api/communities/<community_id>/posts
+Authorization: Bearer <user_jwt_token>
+Content-Type: application/json
+
+{
+  "post_id": "<novo_post_id>",
+  "user_id": "<user_id>",
+  "sensor_id": "<sensor_id>",
+  "description": "Temperatura alta na região.",
+  "media": [
+    {
+      "type": "image",
+      "url": "https://example.com/image1.jpg"
+    }
+  ],
+  "timestamp": "2025-06-01T10:00:00Z",
+  "tags": ["temperature", "alert"],
+  "status": "waiting"
+}
+
+### delete post
+
+DELETE http://localhost:3000/api/communities/<community_id>/posts/<post_id>
+Authorization: Bearer <user_jwt_token_or_admin_token>
+
+
+
+
+
