@@ -3,9 +3,10 @@ POST http://localhost:3000/api/auth/register
 Content-Type: application/json
 
 {
-  "name": "Beatriz",
-  "email": "beatriz@email.com",
-  "password": "123456789"
+  "name": "ADMIN",
+  "email": "admin@email.com",
+  "password": "123456789",
+  "role": "admin"
 }
 
 ### Login User
@@ -13,7 +14,7 @@ POST http://localhost:3000/api/auth/login
 Content-Type: application/json
 
 {
-  "email": "beatriz@email.com",
+  "email": "admin@email.com",
   "password": "123456789"
 }
 
@@ -33,3 +34,32 @@ Content-Type: application/json
 ### DELETE LOGGED USER
 DELETE http://localhost:3000/api/auth/me
 Authorization: Bearer <your_jwt_token_here>
+
+
+### ADMIN 
+
+
+### GET ALL USERS 
+GET http://localhost:3000/api/auth/
+Authorization: Bearer <your_admin_jwt_token>
+
+
+### GET USER BY ID
+GET http://localhost:3000/api/auth/<user_id>
+Authorization: Bearer <your_admin_jwt_token>
+
+### update user 
+
+PATCH http://localhost:3000/api/auth/<user_id>
+Authorization: Bearer <your_admin_jwt_token>
+Content-Type: application/json
+
+{
+  "name": "Updated Name",
+  "location": "Porto, Portugal"
+}
+
+
+### delete user by id
+DELETE http://localhost:3000/api/auth/<user_id>
+Authorization: Bearer <your_admin_jwt_token>

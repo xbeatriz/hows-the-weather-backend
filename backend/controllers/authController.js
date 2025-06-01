@@ -44,14 +44,15 @@ class AuthController {
   }
 
   // Atualizar dados próprios
-  async updateMe(req, res, next) {
-    try {
-      const user = await User.findByIdAndUpdate(req.user._id, req.body, { new: true });
-      res.status(200).json(user);
-    } catch (err) {
-      next(err);
-    }
+async updateMe(req, res, next) {
+  try {
+    const updates = req.body;
+    const user = await User.findByIdAndUpdate(req.user._id, updates, { new: true });
+    res.status(200).json({ message: "User updated", data: { user } });
+  } catch (err) {
+    next(err);
   }
+}
 
   // Apagar conta própria
   async deleteMe(req, res, next) {
