@@ -11,6 +11,8 @@ import routes from "./routes/index.js";
 
 import errorHandler from "./middleware/errorMiddleware.js";
 
+import "./cron/sensorCron.js";
+
 // Load environment variables
 dotenv.config();
 

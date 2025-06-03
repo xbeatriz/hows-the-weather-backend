@@ -1,6 +1,6 @@
 ### Create Sensor
 POST http://localhost:3000/api/sensors
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4M2MxZTA5MGM5ODU1ODMxODhjOGI4NSIsImlhdCI6MTc0ODc3MTYxMiwiZXhwIjoxNzUxMzYzNjEyfQ.gK-0M17kWRKK4ho6_MtjBQtDCWzBaxCO2P0a1bZ4ySg
+Authorization: Bearer <your_jwt_token_here>
 Content-Type: application/json
 
 {
@@ -11,7 +11,7 @@ Content-Type: application/json
 }
 ### Get All Sensors
 GET http://localhost:3000/api/sensors
-Authorization: Bearer https://medium.com/@developerom/schedule-cron-jobs-in-node-js-12a6a33d6ed3
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4M2RhODk4NjE5NmNhZGNhNTRiMmJmMSIsImlhdCI6MTc0ODk2MTU3OCwiZXhwIjoxNzUxNTUzNTc4fQ.gYeIhh8f5U8mZ9NLqFiBojo8yj0UehJeycCufHvoOfY
 
 ### Get One Sensor by ID
 GET http://localhost:3000/api/sensors/<sensor_id_here>
