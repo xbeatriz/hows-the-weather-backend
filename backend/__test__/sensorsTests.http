@@ -11,7 +11,7 @@ Content-Type: application/json
 }
 ### Get All Sensors
 GET http://localhost:3000/api/sensors
-Authorization: Bearer <your_jwt_token_here>
+Authorization: Bearer https://medium.com/@developerom/schedule-cron-jobs-in-node-js-12a6a33d6ed3
 
 ### Get One Sensor by ID
 GET http://localhost:3000/api/sensors/<sensor_id_here>

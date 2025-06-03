@@ -4,7 +4,7 @@ import AppError from "../utils/errorHandler.js";
 class SensorController {
   async createSensor(req, res, next) {
     try {
-      const { type, location, status, update_frequency } = req.body;
+      const { type, location, status, update_frequency, last_reading,readings} = req.body;
 
       if (!type) return next(new AppError("The type field is required.", 400));
       if (!location)
@@ -21,6 +21,8 @@ class SensorController {
         location,
         status,
         update_frequency,
+        last_reading: null,
+        readings: [],
       });
       res.status(201).json({
         status: "success",

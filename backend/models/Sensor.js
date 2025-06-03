@@ -1,5 +1,15 @@
 import mongoose from "mongoose";
-
+const readingSchema = new mongoose.Schema({
+  timestamp: {
+    type: Date,
+    required: true,
+  },
+  values: {
+    temperature: Number,
+    humidity: Number,
+    gas: Number,
+  },
+}, { _id: false });
 const sensorSchema = new mongoose.Schema({
   type: {
     type: String,
@@ -19,21 +29,13 @@ const sensorSchema = new mongoose.Schema({
     type: String,
     enum: ["minutes", "hours", "diary"],
   },
-  last_reading: {
-    timestamp: {
-      type: Date,
-    },
-    values: {
-      temperature: {
-        type: Number,
-      },
-      humidity: {
-        type: Number,
-      },
-      gas: {
-        type: Number,
-      },
-    },
+   last_reading: {
+    type: readingSchema,
+    default: null,
+  },
+  readings: {
+    type: [readingSchema], // lista de leituras
+    default: [],
   },
 });
 
