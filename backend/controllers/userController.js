@@ -3,7 +3,7 @@ import User from "../models/User.js";
 import jwt from "../utils/jwt.js";
 import AppError from "../utils/errorHandler.js";
 
-class AuthController {
+class userController {
   // Registar
   async register(req, res, next) {
     try {
@@ -134,4 +134,4 @@ async updateMe(req, res, next) {
   }
 }
 
-export default new AuthController();
+export default new userController();

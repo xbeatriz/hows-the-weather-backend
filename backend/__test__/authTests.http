@@ -1,29 +1,28 @@
 ### Register User
-POST http://localhost:3000/api/auth/register
+POST http://localhost:3000/api/user/register
 Content-Type: application/json
 
 {
-  "name": "ADMIN",
-  "email": "admin@email.com",
-  "password": "123456789",
-  "role": "admin"
+  "name": "ww",
+  "email": "ww@email.com",
+  "password": "123456789"
 }
 
 ### Login User
-POST http://localhost:3000/api/auth/login
+POST http://localhost:3000/api/user/login
 Content-Type: application/json
 
 {
-  "email": "xx@email.com",
+  "email": "ww@email.com",
   "password": "123456789"
 }
 
 ### Get User Data
-GET http://localhost:3000/api/auth/me
+GET http://localhost:3000/api/user/me
 Authorization: Bearer <your_jwt_token_here>
 
 ### EDIT LOGGED USER
-PATCH http://localhost:3000/api/auth/me
+PATCH http://localhost:3000/api/user/me
 Authorization: Bearer <your_jwt_token_here>
 Content-Type: application/json
 
@@ -32,7 +31,7 @@ Content-Type: application/json
 }
 
 ### DELETE LOGGED USER
-DELETE http://localhost:3000/api/auth/me
+DELETE http://localhost:3000/api/user/me
 Authorization: Bearer <your_jwt_token_here>
 
 
@@ -40,17 +39,17 @@ Authorization: Bearer <your_jwt_token_here>
 
 
 ### GET ALL USERS 
-GET http://localhost:3000/api/auth/
+GET http://localhost:3000/api/user/
 Authorization: Bearer <your_admin_jwt_token>
 
 
 ### GET USER BY ID
-GET http://localhost:3000/api/auth/<user_id>
+GET http://localhost:3000/api/user/<user_id>
 Authorization: Bearer <your_admin_jwt_token>
 
 ### update user 
 
-PATCH http://localhost:3000/api/auth/<user_id>
+PATCH http://localhost:3000/api/user/<user_id>
 Authorization: Bearer <your_admin_jwt_token>
 Content-Type: application/json
 
@@ -61,5 +60,5 @@ Content-Type: application/json
 
 
 ### delete user by id
-DELETE http://localhost:3000/api/auth/<user_id>
+DELETE http://localhost:3000/api/user/<user_id>
 Authorization: Bearer <your_admin_jwt_token>
