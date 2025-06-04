@@ -33,6 +33,11 @@ const router = createRouter({
       // Catch-all route for 404 errors - updated syntax for Vue Router 4
       path: '/:pathMatch(.*)*',
       redirect: '/'
+    },
+    {
+      path: '/verify-email/:token',
+      name: 'VerifyEmail',
+      component: () => import('@/views/VerifyEmail.vue')
     }
   ],
 })

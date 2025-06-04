@@ -21,5 +21,6 @@ router.get("/", protect, checkAdminToken, userController.getAllUsers);
 router.get("/:id", protect, checkAdminToken, userController.getUserById);
 router.patch("/:id", protect, checkAdminToken, userController.updateUserById);
 router.delete("/:id", protect, checkAdminToken, userController.deleteUserById);
+router.get('/verify-email/:token', userController.verifyEmail);
 
 export default router;
