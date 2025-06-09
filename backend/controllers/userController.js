@@ -1,4 +1,3 @@
-
 import User from "../models/User.js";
 import jwt from "../utils/jwt.js";
 import AppError from "../utils/errorHandler.js";
@@ -20,7 +19,7 @@ class userController {
       const verificationToken = jwtLib.sign(
         { userId: user._id },
         process.env.EMAIL_VERIFICATION_SECRET,
-        { expiresIn: '1d' }
+        { expiresIn: "1d" }
       );
 
       const verificationLink = `${process.env.FRONTEND_URL}/verify-email/${verificationToken}`;
@@ -31,16 +30,18 @@ class userController {
         <a href="${verificationLink}">Verificar Email</a>
       `;
 
-      await sendEmail(user.email, 'Verifica o teu e-mail', html);
+      await sendEmail(user.email, "Verifica o teu e-mail", html);
 
-      res.status(201).json({ message: "Account created. Please verify your email." });
+      res
+        .status(201)
+        .json({ message: "Account created. Please verify your email." });
     } catch (err) {
       next(err);
     }
   }
 
   // Login
-    async login(req, res, next) {
+  async login(req, res, next) {
     try {
       const { email, password } = req.body;
       const user = await User.findOne({ email }).select("+password");
@@ -49,7 +50,9 @@ class userController {
       }
 
       if (!user.isVerified) {
-        return next(new AppError("Please verify your email before logging in", 401));
+        return next(
+          new AppError("Please verify your email before logging in", 401)
+        );
       }
 
       const token = jwt.generateToken(user._id);
@@ -62,15 +65,12 @@ class userController {
 
 // Verificar email
    async verifyEmail(req, res, next) {
-  try {
-     console.log("Rota verify-email chamada com token:", req.params.token);
-    console.log("🔍 Verifying email...");
+    try {
+      const { token } = req.params;
+      const decoded = jwtLib.verify(token, process.env.EMAIL_VERIFICATION_SECRET);
 
-    const { token } = req.params;
-    const decoded = jwtLib.verify(token, process.env.EMAIL_VERIFICATION_SECRET);
-
-    const user = await User.findById(decoded.userId);
-    if (!user) return next(new AppError("User not found", 404));
+      const user = await User.findById(decoded.userId);
+      if (!user) return next(new AppError("User not found", 404));
 
     if (user.isVerified) {
       return res.status(400).json({ message: "Email already verified." });
@@ -79,21 +79,11 @@ class userController {
     user.isVerified = true;
     await user.save();
 
-   // login automático após verificação
-    const jwtToken = jwt.generateToken(user._id);
-    user.password = undefined;
-
-    res.status(200).json({
-      message: "Email verified successfully. You are now logged in.",
-      token: jwtToken,
-      data: { user }
-    });
-  } catch (err) {
-    console.error(err);
-    return res.status(400).json({ message: "Invalid or expired verification link." });
+      res.status(200).json({ message: "Email verified successfully." });
+    } catch (err) {
+      next(new AppError("Invalid or expired verification link", 400));
+    }
   }
-}
-
   // Dados do utilizador autenticado
   async getMe(req, res, next) {
     try {
@@ -104,15 +94,17 @@ class userController {
   }
 
   // Atualizar dados próprios
-async updateMe(req, res, next) {
-  try {
-    const updates = req.body;
-    const user = await User.findByIdAndUpdate(req.user._id, updates, { new: true });
-    res.status(200).json({ message: "User updated", data: { user } });
-  } catch (err) {
-    next(err);
+  async updateMe(req, res, next) {
+    try {
+      const updates = req.body;
+      const user = await User.findByIdAndUpdate(req.user._id, updates, {
+        new: true,
+      });
+      res.status(200).json({ message: "User updated", data: { user } });
+    } catch (err) {
+      next(err);
+    }
   }
-}
 
   // Apagar conta própria
   async deleteMe(req, res, next) {
@@ -148,7 +140,9 @@ async updateMe(req, res, next) {
   // Atualizar utilizador por ID (admin)
   async updateUserById(req, res, next) {
     try {
-      const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
+      const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+      });
       if (!user) return next(new AppError("not found", 404));
       res.status(200).json(user);
     } catch (err) {
@@ -192,7 +186,6 @@ async updateMe(req, res, next) {
       next(err);
     }
   }
-  
 }
 
 export default new userController();
