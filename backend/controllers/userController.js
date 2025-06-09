@@ -63,8 +63,8 @@ class userController {
     }
   }
 
-// Verificar email
-   async verifyEmail(req, res, next) {
+  // Verificar email
+  async verifyEmail(req, res, next) {
     try {
       const { token } = req.params;
       const decoded = jwtLib.verify(token, process.env.EMAIL_VERIFICATION_SECRET);
@@ -72,14 +72,17 @@ class userController {
       const user = await User.findById(decoded.userId);
       if (!user) return next(new AppError("User not found", 404));
 
-    if (user.isVerified) {
-      return res.status(400).json({ message: "Email already verified." });
-    }
+      if (user.isVerified) {
+        return res.status(400).json({ message: "Email already verified." });
+      }
 
-    user.isVerified = true;
-    await user.save();
+      user.isVerified = true;
+      await user.save();
 
-      res.status(200).json({ message: "Email verified successfully." });
+      const jwttoken = jwt.generateToken(user._id);
+      user.password = undefined;
+      return res.status(200).json({ message: "Email verified successfully.", jwttoken, data: { user } });
+
     } catch (err) {
       next(new AppError("Invalid or expired verification link", 400));
     }
