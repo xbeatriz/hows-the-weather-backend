@@ -62,25 +62,38 @@ class userController {
 
 // Verificar email
    async verifyEmail(req, res, next) {
-    try {
-      const { token } = req.params;
-      const decoded = jwtLib.verify(token, process.env.EMAIL_VERIFICATION_SECRET);
+  try {
+     console.log("Rota verify-email chamada com token:", req.params.token);
+    console.log("🔍 Verifying email...");
 
-      const user = await User.findById(decoded.userId);
-      if (!user) return next(new AppError("User not found", 404));
+    const { token } = req.params;
+    const decoded = jwtLib.verify(token, process.env.EMAIL_VERIFICATION_SECRET);
 
-      if (user.isVerified) {
-        return res.status(400).json({ message: "Email already verified." });
-      }
+    const user = await User.findById(decoded.userId);
+    if (!user) return next(new AppError("User not found", 404));
 
-      user.isVerified = true;
-      await user.save();
-
-      res.status(200).json({ message: "Email verified successfully." });
-    } catch (err) {
-      next(new AppError("Invalid or expired verification link", 400));
+    if (user.isVerified) {
+      return res.status(400).json({ message: "Email already verified." });
     }
+
+    user.isVerified = true;
+    await user.save();
+
+   // login automático após verificação
+    const jwtToken = jwt.generateToken(user._id);
+    user.password = undefined;
+
+    res.status(200).json({
+      message: "Email verified successfully. You are now logged in.",
+      token: jwtToken,
+      data: { user }
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(400).json({ message: "Invalid or expired verification link." });
   }
+}
+
   // Dados do utilizador autenticado
   async getMe(req, res, next) {
     try {

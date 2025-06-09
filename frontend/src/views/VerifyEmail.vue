@@ -2,7 +2,7 @@
   <div class="verify-email-page">
     <h1 class="text-2xl font-bold mb-4">Verificar E-mail</h1>
     <p v-if="loading">A verificar o teu email...</p>
-    <p v-if="success" class="text-green-600">✅ Email verificado com sucesso!</p>
+    <p v-if="success" class="text-green-600">✅ Email verificado com sucesso! A redirecionar...</p>
     <p v-if="error" class="text-red-600">❌ {{ error }}</p>
   </div>
 </template>
@@ -21,12 +21,23 @@ export default {
     const token = this.$route.params.token;
 
     try {
-      const response = await fetch(`http://localhost:5000/api/verify-email/${token}`);
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || 'Erro ao verificar o email.');
-      }
+      const response = await fetch(`http://localhost:3000/api/user/verify-email/${token}`);
+      const data = await response.json();
+
+      if (!response.ok) throw new Error(data.message || 'Erro ao verificar o email.');
+
+      // Guardar o token JWT
+      localStorage.setItem('token', data.token);
+
+      // Marcar como sucesso
       this.success = true;
+
+      // Redirecionar apenas se sucesso
+      setTimeout(() => {
+        if (this.success) {
+          this.$router.push({ name: 'Home' }); // Ou o nome real da tua rota
+        }
+      }, 2000);
     } catch (err) {
       this.error = err.message;
     } finally {
