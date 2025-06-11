@@ -26,16 +26,14 @@ export default {
 
       if (!response.ok) throw new Error(data.message || 'Erro ao verificar o email.');
 
-      // Guardar o token JWT
-      localStorage.setItem('token', data.token);
-
-      // Marcar como sucesso
+      localStorage.setItem('token', data.token); 
+      localStorage.setItem('user', JSON.stringify(data.data.user));
+      
       this.success = true;
 
-      // Redirecionar apenas se sucesso
       setTimeout(() => {
         if (this.success) {
-          this.$router.push({ name: 'Home' }); // Ou o nome real da tua rota
+          this.$router.push({ name: 'Home' });
         }
       }, 2000);
     } catch (err) {

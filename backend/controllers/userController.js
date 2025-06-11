@@ -15,7 +15,6 @@ class userController {
 
       const user = await User.create(req.body);
 
-      // gerar token de verificação
       const verificationToken = jwtLib.sign(
         { userId: user._id },
         process.env.EMAIL_VERIFICATION_SECRET,
@@ -68,7 +67,6 @@ class userController {
     try {
       const { token } = req.params;
       const decoded = jwtLib.verify(token, process.env.EMAIL_VERIFICATION_SECRET);
-
       const user = await User.findById(decoded.userId);
       if (!user) return next(new AppError("User not found", 404));
 
@@ -78,10 +76,13 @@ class userController {
 
       user.isVerified = true;
       await user.save();
-
-      const jwttoken = jwt.generateToken(user._id);
       user.password = undefined;
-      return res.status(200).json({ message: "Email verified successfully.", jwttoken, data: { user } });
+      const jwttoken = jwt.generateToken(user._id);
+      return res.status(200).json({
+        message: "Email verified successfully.",
+        token: jwttoken,
+        data: { user }
+      });
 
     } catch (err) {
       next(new AppError("Invalid or expired verification link", 400));
