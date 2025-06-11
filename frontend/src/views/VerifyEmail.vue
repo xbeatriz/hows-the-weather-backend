@@ -8,6 +8,8 @@
 </template>
 
 <script>
+import { useUserStore } from '@/stores/userStore'; // ajusta o caminho se necessário
+
 export default {
   name: 'VerifyEmail',
   data() {
@@ -19,6 +21,7 @@ export default {
   },
   async mounted() {
     const token = this.$route.params.token;
+    const userStore = useUserStore();
 
     try {
       const response = await fetch(`http://localhost:3000/api/user/verify-email/${token}`);
@@ -26,11 +29,12 @@ export default {
 
       if (!response.ok) throw new Error(data.message || 'Erro ao verificar o email.');
 
-      localStorage.setItem('token', data.token); 
-      localStorage.setItem('user', JSON.stringify(data.data.user));
-      
+      // Guardar os dados na store
+      userStore.setUserData(data.data.user, data.token);
+
       this.success = true;
 
+      // Redirecionar
       setTimeout(() => {
         if (this.success) {
           this.$router.push({ name: 'Home' });
@@ -44,6 +48,7 @@ export default {
   }
 };
 </script>
+
 
 <style scoped>
 .verify-email-page {
