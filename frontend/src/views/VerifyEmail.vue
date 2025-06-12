@@ -37,7 +37,7 @@ export default {
       // Redirecionar
       setTimeout(() => {
         if (this.success) {
-          this.$router.push({ name: 'Home' });
+          this.$router.push({ name: 'home' });
         }
       }, 2000);
     } catch (err) {

@@ -14,19 +14,15 @@
 
     <nav class="sidebar-nav">
       <ul>
-        <li
-          v-for="item in menuItems"
-          :key="item.id"
-          @click="selectMenu(item.id)"
-          :class="{ active: activeMenu === item.id }"
-        >
+        <li v-for="item in menuItems" :key="item.id" @click="selectMenu(item.id)"
+          :class="{ active: activeMenu === item.id }">
           <font-awesome-icon :icon="item.icon" /> {{ item.name }}
         </li>
       </ul>
     </nav>
 
     <div class="sidebar-footer">
-      <button class="settings-btn" @click="openSettings">
+      <button class="settings-btn" @click="openSettings()">
         <font-awesome-icon :icon="['fas', 'cog']" /> Settings
       </button>
       <button class="logout-btn" @click="logout">
@@ -37,6 +33,8 @@
 </template>
 
 <script>
+import router from '@/router';
+import { useUserStore } from '@/stores/userStore';
 export default {
   name: "Sidebar",
   props: {
@@ -74,9 +72,16 @@ export default {
       this.$emit("logout");
     },
     openSettings() {
-      // Implement settings functionality
-      console.log("Opening settings");
+      router.push({ name: 'settings' });
     },
+  },
+  setup() {
+    const userStore = useUserStore();
+    const user = userStore.user;
+
+    return {
+      user,
+    };
   },
 };
 </script>
@@ -84,8 +89,10 @@ export default {
 <style scoped>
 .sidebar {
   width: 260px;
-  min-width: 260px; /* Fixed width */
-  flex: 0 0 260px; /* Don't grow, don't shrink, fixed basis */
+  min-width: 260px;
+  /* Fixed width */
+  flex: 0 0 260px;
+  /* Don't grow, don't shrink, fixed basis */
   background-color: #141e46;
   color: #fff;
   display: flex;

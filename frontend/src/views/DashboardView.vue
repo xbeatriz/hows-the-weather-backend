@@ -1,7 +1,6 @@
 <template>
   <div class="dashboard-container">
-    <Sidebar 
-      :user="user" 
+    <Sidebar
       :activeMenu="activeMenu"
       @menuChange="handleMenuChange"
       @logout="handleLogout"
@@ -27,6 +26,7 @@ import UsersPanel from '@/components/dashboard/UsersPanel.vue';
 import SensorsPanel from '@/components/dashboard/SensorsPanel.vue';
 import CommunitiesPanel from '@/components/dashboard/CommunitiesPanel.vue';
 import OverviewPanel from '@/components/dashboard/OverviewPanel.vue';
+import { useUserStore } from '@/stores/userStore';
 
 export default {
   name: 'DashboardView',
@@ -77,7 +77,7 @@ export default {
     },
     handleLogout() {
       // Handle logout logic here
-      console.log('User logged out');
+      useUserStore.logout();
       this.$router.push('/login');
     },
     loadComponentData() {
@@ -143,7 +143,7 @@ export default {
   box-sizing: border-box;
 }
 
-.dashboard-container {
+.page-layout {
   display: flex;
   height: 100vh;
   position: fixed;
@@ -154,7 +154,15 @@ export default {
   background-color: #f5f7fa;
 }
 
-.dashboard-content {
+.sidebar-wrapper {
+  width: 250px;
+  background-color: #fff;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+  padding: 20px 0;
+  overflow-y: auto;
+}
+
+.content-wrapper {
   flex: 1;
   padding: 25px 30px;
   overflow-y: auto;
@@ -162,65 +170,152 @@ export default {
   position: relative;
 }
 
-.content-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  padding-bottom: 15px;
-  border-bottom: 1px solid #e0e6ed;
-  width: 100%;
-}
-
-.content-header h1 {
+/* Título */
+h2 {
   font-size: 24px;
   color: #2c3e50;
   font-weight: 600;
+  margin-bottom: 25px;
+  text-align: center;
 }
 
-.header-actions {
+/* Container de definições */
+.settings-container {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 30px 40px;
+  border-radius: 12px;
+  background-color: #fff;
+  color: #222;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.12);
+}
+
+/* Formulários */
+.form-group {
+  margin-bottom: 20px;
   display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+input[type='text'],
+input[type='number'],
+select {
+  background-color: #f5f7fa;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 8px 12px;
+  color: #333;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+input[type='text']::placeholder,
+input[type='number']::placeholder {
+  color: #999;
+}
+
+input[type='text']:focus,
+input[type='number']:focus,
+select:focus {
+  outline: none;
+  border-color: #41b06e;
+  background-color: #e9f5ec;
+  color: #222;
+}
+
+/* Alert thresholds */
+.alert-thresholds {
+  border: 1px solid #41b06e;
+  border-radius: 6px;
+  padding: 15px 20px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.alert-thresholds legend {
+  font-weight: 700;
+  font-size: 16px;
+  margin-bottom: 15px;
+  color: #41b06e;
+}
+
+.alert-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
   gap: 10px;
 }
 
-.refresh-btn {
-  background-color: #ffffff;
-  color: #41B06E;
-  border: 1px solid #e0e6ed;
-  padding: 8px 15px;
-  border-radius: 6px;
+.alert-row label {
+  min-width: 100px;
+  color: #4a7f57;
+}
+
+.alert-row input[type='number'] {
+  width: 80px;
+  text-align: center;
+}
+
+/* Checkbox */
+.checkbox-group label {
   cursor: pointer;
-  font-size: 14px;
   display: flex;
   align-items: center;
-  gap: 5px;
-  transition: all 0.2s;
+  gap: 10px;
+  font-weight: 600;
+  color: #333;
 }
 
-.refresh-btn:hover {
-  background-color: #f8f9fa;
-  border-color: #41B06E;
+.checkbox-group input[type='checkbox'] {
+  transform: scale(1.3);
+  cursor: pointer;
 }
 
-/* Media queries for responsiveness */
+/* Botão de guardar */
+.save-btn {
+  width: 100%;
+  background-color: #41b06e;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 0;
+  font-weight: 700;
+  font-size: 16px;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.save-btn:hover {
+  background-color: #2d7d4b;
+}
+
+/* Responsivo */
 @media screen and (max-width: 768px) {
-  .dashboard-container {
+  .page-layout {
     flex-direction: column;
   }
-  
-  .dashboard-content {
+
+  .sidebar-wrapper {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+
+  .content-wrapper {
     width: 100%;
     padding: 15px;
   }
-  
-  .content-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
-  
-  .header-actions {
-    width: 100%;
+
+  .settings-container {
+    padding: 20px;
   }
 }
 </style>
+

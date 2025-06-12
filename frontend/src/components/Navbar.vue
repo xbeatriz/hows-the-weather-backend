@@ -1,19 +1,56 @@
+<script>
+import { useUserStore } from '@/stores/userStore';
+import { mapState } from 'pinia';
+
+export default {
+  name: 'Navbar',
+  data() {
+    return {
+      menuActive: false
+    };
+  },
+  computed: {
+    ...mapState(useUserStore, ['user']),
+    isAuthenticated() {
+      return !!this.user?.id;
+    }
+  },
+  methods: {
+    toggleMenu() {
+      this.menuActive = !this.menuActive;
+    },
+    logout() {
+      const store = useUserStore();
+      store.logout();
+      this.$router.push('/login');
+    }
+  }
+};
+</script>
+
 <template>
   <nav class="navbar">
     <div class="navbar-container">
+      <!-- Logo -->
       <router-link to="/" class="navbar-logo">
         How's The Weather?
       </router-link>
-      
+
+      <!-- Menu autenticado -->
       <div class="navbar-menu" :class="{ 'active': menuActive }">
-        <router-link to="/" class="nav-item">Home</router-link>
-        <router-link to="/about" class="nav-item">About</router-link>
-        <div class="nav-auth">
+        <template v-if="isAuthenticated">
+          <router-link to="/settings" class="nav-item">Settings</router-link>
+          <button class="nav-btn logout-btn" @click="logout">Logout</button>
+        </template>
+
+        <!-- Menu não autenticado -->
+        <template v-else>
           <router-link to="/login" class="nav-btn login-btn">Login</router-link>
           <router-link to="/signup" class="nav-btn signup-btn">Sign Up</router-link>
-        </div>
+        </template>
       </div>
-      
+
+      <!-- Ícone de menu para mobile -->
       <div class="menu-icon" @click="toggleMenu">
         <div class="bar"></div>
         <div class="bar"></div>
@@ -22,23 +59,6 @@
     </div>
   </nav>
 </template>
-
-<script>
-export default {
-  name: 'Navbar',
-  data() {
-    return {
-      menuActive: false
-    }
-  },
-  methods: {
-    toggleMenu() {
-      this.menuActive = !this.menuActive;
-    }
-  }
-}
-</script>
-
 <style scoped>
 .navbar {
   background-color: white;
@@ -169,4 +189,3 @@ export default {
   }
 }
 </style>
-

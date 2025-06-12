@@ -6,47 +6,47 @@
         <div class="login-form-section">
           <h1>Sign Up</h1>
           <p class="subtitle">Already have an account? <router-link to="/login">Login</router-link></p>
-          
+
           <div class="form-group">
             <label for="name">Full Name</label>
-            <input type="text" id="name" v-model="name" placeholder="John Doe">
+            <input type="text" id="name" v-model="name" placeholder="John Doe" />
           </div>
 
           <div class="form-group">
             <label for="email">Email Address</label>
-            <input type="email" id="email" v-model="email" placeholder="you@example.com">
+            <input type="email" id="email" v-model="email" placeholder="you@example.com" />
           </div>
-          
+
           <div class="form-group">
             <label for="password">Password</label>
-            <input type="password" id="password" v-model="password" placeholder="Enter 6 character or more">
+            <input type="password" id="password" v-model="password" placeholder="Enter 6 character or more" />
           </div>
 
           <div class="form-group">
             <label for="confirmPassword">Confirm Password</label>
-            <input type="password" id="confirmPassword" v-model="confirmPassword" placeholder="Repeat your password">
+            <input type="password" id="confirmPassword" v-model="confirmPassword" placeholder="Repeat your password" />
           </div>
-          
+
           <button @click="signUp" class="login-button">SIGN UP</button>
-          
+
           <div class="or-separator">
             <span>Or sign up with</span>
           </div>
-          
+
           <div class="social-buttons">
             <button class="google-btn">
-              <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" alt="Google">
+              <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" alt="Google" />
               Google
             </button>
             <button class="facebook-btn">
-              <img src="https://cdn-icons-png.flaticon.com/512/5968/5968764.png" alt="Facebook">
+              <img src="https://cdn-icons-png.flaticon.com/512/5968/5968764.png" alt="Facebook" />
               Facebook
             </button>
           </div>
         </div>
-        
+
         <div class="login-image-section">
-          <img src="@/assets/undraw_weather.svg" alt="Sign Up" class="login-illustration">
+          <img src="@/assets/undraw_weather.svg" alt="Sign Up" class="login-illustration" />
         </div>
       </div>
     </div>
@@ -55,6 +55,7 @@
 
 <script>
 import Navbar from '@/components/Navbar.vue'
+import { useUserStore } from '@/stores/userStore'
 
 export default {
   name: 'SignUpView',
@@ -70,16 +71,47 @@ export default {
     }
   },
   methods: {
-    signUp() {
+    async signUp() {
       if (this.password !== this.confirmPassword) {
-        alert("Passwords do not match!");
-        return;
+        alert('Passwords do not match!')
+        return
       }
 
-      // Lógica de registo vai aqui
-      console.log('Sign-up attempted with:', this.name, this.email);
+      try {
+        const response = await fetch('http://localhost:3000/api/user/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            name: this.name,
+            email: this.email,
+            password: this.password
+          })
+        })
+
+        if (!response.ok) {
+          const errorData = await response.json()
+          alert('Erro ao registar: ' + (errorData.message || 'Tente novamente.'))
+          return
+        }
+
+        // Aqui só mostra mensagem de sucesso para o utilizador
+        alert('Registo efetuado! Por favor, verifique seu email para ativar a conta.')
+
+        // Limpar campos para evitar confusão
+        this.name = ''
+        this.email = ''
+        this.password = ''
+        this.confirmPassword = ''
+
+      } catch (error) {
+        alert('Erro na comunicação com o servidor.')
+        console.error('Erro no registo:', error)
+      }
     }
   }
+
 }
 </script>
 
@@ -104,7 +136,7 @@ export default {
 
 .login-container {
   width: 100vw;
-  min-height: 100vh; 
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -116,7 +148,7 @@ export default {
 }
 
 .login-card {
-   display: flex;
+  display: flex;
   width: 80%;
   max-width: 1000px;
   background-color: white;
@@ -270,7 +302,8 @@ input:focus {
   }
 
   .login-image-section {
-    display: none; /* Hide image section on mobile */
+    display: none;
+    /* Hide image section on mobile */
   }
 
   .login-form-section {

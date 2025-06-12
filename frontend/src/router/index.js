@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-
+import { useUserStore } from '@/stores/userStore'
 import LandingPage from '../views/LandingPageView.vue'
 import LogInView from '../views/LoginView.vue'
 import SingUpView from '../views/SingUpView.vue'
@@ -23,14 +23,14 @@ const router = createRouter({
       path: '/signup',
       name: 'signup',
       component: SingUpView
-    }, 
-        {
+    },
+    {
       path: '/home',
       name: 'home',
       component: HomeView,
       meta: { requiresAuth: true }
     },
-    
+
     {
       path: '/dashboard',
       name: 'dashboard',
@@ -48,33 +48,29 @@ const router = createRouter({
       component: () => import('@/views/VerifyEmail.vue')
     },
     {
-      path: '/Home',
-      name: 'Home',
-      component: () => import('@/views/HomeView.vue')
+      path: '/settings',
+      name: 'Settings',
+      component: () => import('@/views/Settings.vue'),
+      meta: { requiresAuth: true }
     }
+
   ],
 })
 
+
 router.beforeEach((to, from, next) => {
-  // Make sure the route exists before attempting to navigate
+  const userStore = useUserStore();
+
   if (to.matched.length === 0) {
-    console.error('Route not found:', to.path);
+    console.error('Rota não encontrada:', to.path);
     next('/');
+  } else if (to.meta.requiresAuth && !userStore.token) {
+    console.warn('Acesso negado: precisa de login');
+    next('/login');
   } else {
-    // Check if the component exists
-    try {
-      const component = to.matched[0].components.default;
-      if (component) {
-        next();
-      } else {
-        console.error('Component not found for route:', to.path);
-        next('/');
-      }
-    } catch (error) {
-      console.error('Error loading route:', error);
-      next('/');
-    }
+    next();
   }
-})
+});
+
 
 export default router

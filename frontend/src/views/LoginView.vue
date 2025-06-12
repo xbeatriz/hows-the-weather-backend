@@ -6,48 +6,38 @@
         <div class="login-form-section">
           <h1>Login</h1>
           <p class="subtitle">Doesn't have an account yet? <router-link to="/signup">Sign Up</router-link></p>
-          
+
           <div class="form-group">
             <label for="email">Email Address</label>
-            <input 
-              type="email" 
-              id="email" 
-              v-model="email" 
-              placeholder="you@example.com"
-              :class="{ 'input-error': errors.email }"
-            >
+            <input type="email" id="email" v-model="email" placeholder="you@example.com"
+              :class="{ 'input-error': errors.email }">
             <span class="error-message" v-if="errors.email">{{ errors.email }}</span>
           </div>
-          
+
           <div class="form-group">
             <div class="password-header">
               <label for="password">Password</label>
               <a href="#" class="forgot-link">Forgot Password?</a>
             </div>
-            <input 
-              type="password" 
-              id="password" 
-              v-model="password" 
-              placeholder="Enter 6 character or more"
-              :class="{ 'input-error': errors.password }"
-            >
+            <input type="password" id="password" v-model="password" placeholder="Enter 6 character or more"
+              :class="{ 'input-error': errors.password }">
             <span class="error-message" v-if="errors.password">{{ errors.password }}</span>
           </div>
-          
+
           <div class="remember-me">
             <input type="checkbox" id="remember" v-model="rememberMe">
             <label for="remember">Remember me</label>
           </div>
-          
+
           <button @click="login" class="login-button" :disabled="isLoading">
             <span v-if="!isLoading">LOGIN</span>
             <span v-else>LOGGING IN...</span>
           </button>
-          
+
           <div class="or-separator">
             <span>Or login with</span>
           </div>
-          
+
           <div class="social-buttons">
             <button class="google-btn">
               <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" alt="Google">
@@ -59,7 +49,7 @@
             </button>
           </div>
         </div>
-        
+
         <div class="login-image-section">
           <img src="@/assets/undraw_weather.svg" alt="Login" class="login-illustration">
         </div>
@@ -70,6 +60,7 @@
 
 <script>
 import Navbar from '@/components/Navbar.vue'
+import { useUserStore } from '@/stores/userStore'
 
 export default {
   name: 'LogInView',
@@ -91,12 +82,9 @@ export default {
   methods: {
     validateForm() {
       let isValid = true;
-      this.errors = {
-        email: '',
-        password: ''
-      };
-      
-      // Email validation
+      this.errors.email = '';
+      this.errors.password = '';
+
       if (!this.email) {
         this.errors.email = 'Email is required';
         isValid = false;
@@ -104,8 +92,7 @@ export default {
         this.errors.email = 'Please enter a valid email address';
         isValid = false;
       }
-      
-      // Password validation
+
       if (!this.password) {
         this.errors.password = 'Password is required';
         isValid = false;
@@ -113,27 +100,49 @@ export default {
         this.errors.password = 'Password must be at least 6 characters';
         isValid = false;
       }
-      
+
       return isValid;
     },
+
     async login() {
       if (!this.validateForm()) return;
-      
+
       this.isLoading = true;
-      
+      const userStore = useUserStore();
+
       try {
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        console.log('Login attempted with:', this.email);
-        
-        // Here you would implement the actual login logic with your API
-        // const response = await authService.login(this.email, this.password);
-        
-        // Redirect after successful login
-        // this.$router.push('/dashboard');
+        const response = await fetch('http://localhost:3000/api/user/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email: this.email,
+            password: this.password
+          })
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Login failed');
+        }
+
+        const data = await response.json();
+
+        userStore.setUserData(data.data.user, data.token);
+
+        if (this.rememberMe) {
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('user', JSON.stringify(data.data.user));
+        }
+
+
+        this.$router.push('/dashboard');
       } catch (error) {
-        console.error('Login failed:', error);
-        // Handle login error
+        console.error('Login failed:', error.message);
+        // Mostrar erro de forma mais amigável
+        this.errors.email = '';
+        this.errors.password = error.message || 'Invalid email or password';
       } finally {
         this.isLoading = false;
       }
@@ -143,14 +152,13 @@ export default {
 </script>
 
 <style scoped>
-
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-.login-view{
+.login-view {
   font-family: 'Arial', sans-serif;
   width: 100%;
   position: absolute;
@@ -162,7 +170,7 @@ export default {
 
 .login-container {
   width: 100vw;
-  min-height: 100vh; 
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -186,7 +194,7 @@ export default {
 .login-form-section {
   flex: 1;
   padding: 40px;
- 
+
 }
 
 .login-image-section {
@@ -374,16 +382,17 @@ input[type="password"]:focus {
     width: 95%;
     max-height: none;
   }
-  
+
   .login-image-section {
-    display: none; /* Hide the image section on mobile screens */
+    display: none;
+    /* Hide the image section on mobile screens */
   }
-  
+
   .login-form-section {
     padding: 20px;
     min-height: auto;
   }
-  
+
   .social-buttons {
     flex-direction: column;
   }
@@ -393,11 +402,11 @@ input[type="password"]:focus {
   .login-container {
     padding: 10px;
   }
-  
+
   .login-form_section {
     padding: 15px;
   }
-  
+
   /* .login-image-section {
     height: 150px; 
   } */
