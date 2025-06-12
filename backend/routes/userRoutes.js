@@ -12,6 +12,7 @@ router.post("/login", userController.login);
 router.get("/me", protect, userController.getMe);
 router.patch("/me", protect, userController.updateMe);
 router.delete("/me", protect, userController.deleteMe);
+router.get('/verify-email/:token', userController.verifyEmail);
 
 router.get("/me/configs", protect, userController.getConfigs);
 router.patch("/me/configs", protect, userController.updateConfigs);
@@ -21,6 +22,5 @@ router.get("/", protect, checkAdminToken, userController.getAllUsers);
 router.get("/:id", protect, checkAdminToken, userController.getUserById);
 router.patch("/:id", protect, checkAdminToken, userController.updateUserById);
 router.delete("/:id", protect, checkAdminToken, userController.deleteUserById);
-router.get('/verify-email/:token', userController.verifyEmail);
 
 export default router;

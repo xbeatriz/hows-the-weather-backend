@@ -46,6 +46,11 @@ const router = createRouter({
       path: '/verify-email/:token',
       name: 'VerifyEmail',
       component: () => import('@/views/VerifyEmail.vue')
+    },
+    {
+      path: '/Home',
+      name: 'Home',
+      component: () => import('@/views/HomeView.vue')
     }
   ],
 })
