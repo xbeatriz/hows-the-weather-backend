@@ -1,34 +1,30 @@
 <template>
   <div class="sidebar">
     <div class="logo-container">
-      <h1>Weather Admin</h1>
+      <h1>{{ headerText }}</h1>
     </div>
-    
+
     <div class="user-profile">
-      <img :src="user.avatar" :alt="user.name" class="user-avatar">
+      <img :src="user.avatar" :alt="user.name" class="user-avatar" />
       <div class="user-info">
         <h3>{{ user.name }}</h3>
         <p>{{ user.role }}</p>
       </div>
     </div>
-    
+
     <nav class="sidebar-nav">
       <ul>
-        <li @click="selectMenu('overview')" :class="{ active: activeMenu === 'overview' }">
-          <font-awesome-icon :icon="['fas', 'tachometer-alt']" /> Dashboard
-        </li>
-        <li @click="selectMenu('users')" :class="{ active: activeMenu === 'users' }">
-          <font-awesome-icon :icon="['fas', 'users']" /> Users
-        </li>
-        <li @click="selectMenu('sensors')" :class="{ active: activeMenu === 'sensors' }">
-          <font-awesome-icon :icon="['fas', 'microchip']" /> Sensors
-        </li>
-        <li @click="selectMenu('communities')" :class="{ active: activeMenu === 'communities' }">
-          <font-awesome-icon :icon="['fas', 'city']" /> Communities
+        <li
+          v-for="item in menuItems"
+          :key="item.id"
+          @click="selectMenu(item.id)"
+          :class="{ active: activeMenu === item.id }"
+        >
+          <font-awesome-icon :icon="item.icon" /> {{ item.name }}
         </li>
       </ul>
     </nav>
-    
+
     <div class="sidebar-footer">
       <button class="settings-btn" @click="openSettings">
         <font-awesome-icon :icon="['fas', 'cog']" /> Settings
@@ -42,30 +38,47 @@
 
 <script>
 export default {
-  name: 'Sidebar',
+  name: "Sidebar",
   props: {
     user: {
       type: Object,
-      required: true
+      default: () => ({
+        name: "Guest User",
+        role: "Visitor",
+        avatar: "https://via.placeholder.com/50",
+      }),
     },
     activeMenu: {
       type: String,
-      default: 'overview'
-    }
+      default: "overview",
+    },
+    menuItems: {
+      type: Array,
+      default: () => [
+        { id: "overview", name: "Dashboard", icon: ["fas", "tachometer-alt"] },
+        { id: "users", name: "Users", icon: ["fas", "users"] },
+        { id: "sensors", name: "Sensors", icon: ["fas", "microchip"] },
+        { id: "communities", name: "Communities", icon: ["fas", "city"] },
+      ],
+    },
+    headerText: {
+      type: String,
+      default: "Weather Admin",
+    },
   },
   methods: {
     selectMenu(menuItem) {
-      this.$emit('menuChange', menuItem);
+      this.$emit("menuChange", menuItem);
     },
     logout() {
-      this.$emit('logout');
+      this.$emit("logout");
     },
     openSettings() {
       // Implement settings functionality
-      console.log('Opening settings');
-    }
-  }
-}
+      console.log("Opening settings");
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -73,7 +86,7 @@ export default {
   width: 260px;
   min-width: 260px; /* Fixed width */
   flex: 0 0 260px; /* Don't grow, don't shrink, fixed basis */
-  background-color: #141E46;
+  background-color: #141e46;
   color: #fff;
   display: flex;
   flex-direction: column;
@@ -92,7 +105,7 @@ export default {
 .logo-container h1 {
   font-size: 20px;
   font-weight: 700;
-  color: #41B06E;
+  color: #41b06e;
 }
 
 .user-profile {
@@ -153,7 +166,7 @@ export default {
 }
 
 .sidebar-nav li.active {
-  background-color: #41B06E;
+  background-color: #41b06e;
   font-weight: 600;
 }
 
@@ -165,7 +178,8 @@ export default {
   gap: 10px;
 }
 
-.settings-btn, .logout-btn {
+.settings-btn,
+.logout-btn {
   width: 100%;
   padding: 10px;
   border: none;
@@ -203,7 +217,7 @@ export default {
     position: fixed;
     transform: translateX(-100%);
   }
-  
+
   .sidebar.active {
     transform: translateX(0);
   }
