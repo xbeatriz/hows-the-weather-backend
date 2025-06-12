@@ -513,14 +513,24 @@ export default {
   box-sizing: border-box;
 }
 
+html, body {
+  width: 100%;
+  height: 100%;
+}
+
+
 .home {
-  min-height: 100vh;
+  width: 100%;
+  min-height: 100vh; /* Tamanho mínimo igual à altura da tela */
   position: relative;
   background-color: #f8fafc;
   transition: margin-left 0.3s ease;
   color: #334155;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  overflow-x: hidden; /* evita scroll horizontal */
+  padding: 1rem; /* adiciona espaçamento interno */
 }
+
 
 .home.sidebar-active {
   margin-left: 280px;
@@ -704,25 +714,50 @@ export default {
 
 /* Dashboard Content Styles */
 .dashboard-content {
-  padding: 80px 40px 40px;
-  max-width: 1200px;
+  padding: 80px 0 40px; /* Remove horizontal padding to allow full width */
+  width: 100%;
+  max-width: 100%;
   margin: 0 auto;
   transition: padding 0.3s ease;
+  box-sizing: border-box;
 }
 
 /* Modern Card Grid Layouts */
 .weather-card-grid {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
   gap: 20px;
-  margin-bottom: 20px;
+  margin: 0 20px 20px; /* Use margin instead of padding to maintain full width */
+  width: calc(100% - 40px); /* Adjust for the margins */
+}
+
+.current-weather-card {
+  flex: 1;
+  min-width: 300px;
+  height: auto; /* Allow height to adapt to content */
+  min-height: 400px; /* Ensure minimum height */
+}
+
+.forecast-card {
+  flex: 2;
+  min-width: 500px;
+  height: auto; /* Allow height to adapt to content */
 }
 
 .metrics-card-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
   gap: 20px;
-  margin-bottom: 20px;
+  margin: 0 20px 20px; /* Use margin instead of padding */
+  width: calc(100% - 40px); /* Adjust for the margins */
+}
+
+.metric-card {
+  flex: 1;
+  min-width: 300px;
+  height: auto; /* Allow height to adapt to content */
 }
 
 /* Card Styles */
@@ -732,11 +767,9 @@ export default {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 10px 15px rgba(0, 0, 0, 0.03);
   overflow: hidden;
   transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.weather-card:hover, .metric-card:hover, .weather-data-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1), 0 15px 20px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  display: flex; /* Add flexbox for better content distribution */
+  flex-direction: column; /* Stack children vertically */
 }
 
 /* Card Header */
@@ -758,6 +791,9 @@ export default {
 /* Card Content */
 .card-content {
   padding: 20px;
+  flex: 1; /* Allow content to expand */
+  display: flex;
+  flex-direction: column;
 }
 
 /* Current Weather Card */
@@ -765,7 +801,8 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 30px 20px;
+  padding: 20px; /* Reduce padding slightly */
+  justify-content: center; /* Center content vertically */
 }
 
 .location-badge {
@@ -1006,7 +1043,8 @@ export default {
 
 /* Additional Weather Data Card */
 .weather-data-card {
-  margin-bottom: 40px;
+  margin: 0 20px 40px; /* Use margin instead of padding */
+  width: calc(100% - 40px); /* Adjust for the margins */
 }
 
 .date-selector {
@@ -1038,12 +1076,14 @@ export default {
 }
 
 .data-tiles {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  display: flex;
+  flex-wrap: wrap;
   gap: 15px;
 }
 
 .data-tile {
+  flex: 1;
+  min-width: 200px;
   background: #f8fafc;
   border-radius: 12px;
   padding: 20px;
@@ -1079,42 +1119,63 @@ export default {
 }
 
 /* Responsive Adjustments */
+@media (min-width: 2000px) {
+  .weather-card-grid, .metrics-card-grid {
+    margin: 0 5% 20px; /* Percentage-based margins */
+    width: calc(100% - 10%); /* Adjust for the margins */
+  }
+  
+  .weather-data-card {
+    margin: 0 5% 40px;
+    width: calc(100% - 10%);
+  }
+}
+
+@media (min-width: 1440px) and (max-width: 1999px) {
+  .weather-card-grid, .metrics-card-grid {
+    margin: 0 4% 20px;
+    width: calc(100% - 8%);
+  }
+  
+  .weather-data-card {
+    margin: 0 4% 40px;
+    width: calc(100% - 8%);
+  }
+}
+
+@media (min-width: 1025px) and (max-width: 1439px) {
+  .weather-card-grid, .metrics-card-grid {
+    margin: 0 3% 20px;
+    width: calc(100% - 6%);
+  }
+  
+  .weather-data-card {
+    margin: 0 3% 40px;
+    width: calc(100% - 6%);
+  }
+  
+  .forecast-card {
+    min-width: 450px;
+  }
+}
+
 @media (max-width: 1024px) {
   .weather-card-grid, .metrics-card-grid {
-    grid-template-columns: 1fr;
+    flex-direction: column;
+    margin: 0 20px 20px;
+    width: calc(100% - 40px);
   }
   
-  .data-tiles {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 768px) {
-  .data-tiles {
-    grid-template-columns: 1fr;
+  .current-weather-card, .forecast-card, .metric-card {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    min-height: auto; /* Allow height to be determined by content */
   }
   
-  .metrics-card-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 480px) {
-  .forecast-daily .time-labels {
-    overflow-x: auto;
-    padding-bottom: 10px;
-  }
-  
-  .chart-container {
-    overflow-x: auto;
-  }
-  
-  .time-label {
-    min-width: 60px;
-  }
-  
-  .pollutants-table {
-    overflow-x: auto;
+  .weather-data-card {
+    margin: 0 20px 40px;
+    width: calc(100% - 40px);
   }
 }
 
