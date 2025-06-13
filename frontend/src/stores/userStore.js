@@ -3,9 +3,9 @@ import { defineStore } from 'pinia';
 
 export const useUserStore = defineStore('userStore', {
   state: () => ({
-  token: localStorage.getItem('token') || null,
-  user: JSON.parse(localStorage.getItem('user')) || null
-}),
+    token: localStorage.getItem('token') || null,
+    user: JSON.parse(localStorage.getItem('user')) || null
+  }),
 
   actions: {
     setUserData(user, token) {
@@ -13,12 +13,10 @@ export const useUserStore = defineStore('userStore', {
       this.token = token;
     },
     logout() {
-  this.user = null;
-  this.token = null;
-  localStorage.removeItem('token');
-  localStorage.removeItem('user');
-}
-
-
+      this.user = null;
+      this.token = null;
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+    }
   }
 });

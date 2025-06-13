@@ -27,6 +27,8 @@ class userController {
         <h2>Olá ${user.name}</h2>
         <p>Confirma o teu email clicando no link abaixo:</p>
         <a href="${verificationLink}">Verificar Email</a>
+        <p>Ou copiando o link:</p>
+        <p>${verificationLink}</p>
       `;
 
       await sendEmail(user.email, "Verifica o teu e-mail", html);
