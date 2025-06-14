@@ -52,6 +52,18 @@ const router = createRouter({
       name: 'Settings',
       component: () => import('@/views/Settings.vue'),
       meta: { requiresAuth: true }
+    },
+    {
+      path: '/comunity',
+      name: 'Community',
+      component: () => import('@/views/Comunity.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/criar-publicacao',
+      name: 'CreatePost',
+      component: () => import('@/components/CommunitiesPanel.vue'),
+      meta: { requiresAuth: true }
     }
 
   ],

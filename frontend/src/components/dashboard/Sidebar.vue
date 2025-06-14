@@ -34,6 +34,7 @@
 
 <script>
 import router from '@/router';
+import { computed } from 'vue';
 import { useUserStore } from '@/stores/userStore';
 export default {
   name: "Sidebar",
@@ -50,15 +51,14 @@ export default {
       type: String,
       default: "overview",
     },
-    menuItems: {
-      type: Array,
-      default: () => [
-        { id: "overview", name: "Dashboard", icon: ["fas", "tachometer-alt"] },
-        { id: "users", name: "Users", icon: ["fas", "users"] },
-        { id: "sensors", name: "Sensors", icon: ["fas", "microchip"] },
-        { id: "communities", name: "Communities", icon: ["fas", "city"] },
-      ],
-    },
+    headerText: {
+    type: String,
+    default: "Weather Admin",
+  },
+  activeMenu: {
+    type: String,
+    default: "overview",
+  },
     headerText: {
       type: String,
       default: "Weather Admin",
@@ -76,13 +76,29 @@ export default {
     },
   },
   setup() {
-    const userStore = useUserStore();
-    const user = userStore.user;
+  const userStore = useUserStore();
+  const user = userStore.user;
 
-    return {
-      user,
-    };
-  },
+  const menuItems = computed(() => {
+    const items = [
+      { id: "overview", name: "Overview", icon: ["fas", "tachometer-alt"] },
+      { id: "sensors", name: "Sensors", icon: ["fas", "microchip"] },
+      { id: "communities", name: "Communities", icon: ["fas", "city"] },
+    ];
+
+    if (user.role === "admin") {
+      items.unshift({ id: "admin-dashboard", name: "Admin Dashboard", icon: ["fas", "tools"] });
+      items.splice(2, 0, { id: "users", name: "Users", icon: ["fas", "users"] });
+    }
+
+    return items;
+  });
+
+  return {
+    user,
+    menuItems,
+  };
+},
 };
 </script>
 

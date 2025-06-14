@@ -1,12 +1,17 @@
 <template>
   <div id="app">
     <router-view/>
+    <AppNotification />
   </div>
 </template>
 
 <script>
+import AppNotification from "@/components/AppNotification.vue";
 export default {
   name: 'App',
+  components: {
+    AppNotification,
+  },
 };
 </script>
 

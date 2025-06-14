@@ -9,105 +9,121 @@
       <div class="content-header">
         <h1>{{ pageTitle }}</h1>
         <div class="header-actions">
-          <button class="refresh-btn">
-            <i class="fas fa-sync"></i> Refresh
+          <button class="refresh-btn" @click="loadComponentData">
+            <i class="fas fa-sync"></i> Atualizar
           </button>
+          <button class="create-btn" @click="openCreateUserForm">+ Novo Utilizador</button>
+          <button class="create-btn" @click="openCreateSensorForm">+ Novo Sensor</button>
+          <button class="create-btn" @click="openCreateCommunityForm">+ Nova Comunidade</button>
         </div>
       </div>
-      
-      <component :is="currentComponent" :data="componentData"></component>
+
+      <!-- Painel dinâmico -->
+      <component :is="currentComponent" :data="componentData" />
+
+      <!-- Modais -->
+      <Modal v-if="showCreateUser" title="Criar Novo Utilizador" @close="showCreateUser = false">
+        <CreateUserForm @submitted="onFormSubmitted" @cancel="showCreateUser = false" />
+      </Modal>
+
+      <Modal v-if="showCreateSensor" title="Criar Novo Sensor" @close="showCreateSensor = false">
+        <CreateSensorForm @submitted="onFormSubmitted" @cancel="showCreateSensor = false" />
+      </Modal>
+
+      <Modal v-if="showCreateCommunity" title="Criar Nova Comunidade" @close="showCreateCommunity = false">
+        <CreateCommunityForm @submitted="onFormSubmitted" @cancel="showCreateCommunity = false" />
+      </Modal>
     </div>
   </div>
 </template>
 
 <script>
 import Sidebar from '@/components/dashboard/Sidebar.vue';
+import OverviewPanel from '@/components/dashboard/OverviewPanel.vue';
 import UsersPanel from '@/components/dashboard/UsersPanel.vue';
 import SensorsPanel from '@/components/dashboard/SensorsPanel.vue';
 import CommunitiesPanel from '@/components/dashboard/CommunitiesPanel.vue';
-import OverviewPanel from '@/components/dashboard/OverviewPanel.vue';
+
+import Modal from '@/components/common/Modal.vue';
+import CreateUserForm from '@/components/forms/CreateUserForm.vue';
+import CreateSensorForm from '@/components/forms/CreateSensorForm.vue';
+import CreateCommunityForm from '@/components/forms/CreateCommunityForm.vue';
+
 import { useUserStore } from '@/stores/userStore';
 
 export default {
   name: 'DashboardView',
   components: {
     Sidebar,
+    OverviewPanel,
     UsersPanel,
     SensorsPanel,
     CommunitiesPanel,
-    OverviewPanel
+    Modal,
+    CreateUserForm,
+    CreateSensorForm,
+    CreateCommunityForm
   },
   data() {
     return {
-      user: {
-        name: 'John Doe',
-        email: 'john.doe@example.com',
-        role: 'Administrator',
-        avatar: 'https://randomuser.me/api/portraits/men/1.jpg'
-      },
       activeMenu: 'overview',
-      componentData: {}
-    }
+      componentData: {},
+
+      // Controlo de modais
+      showCreateUser: false,
+      showCreateSensor: false,
+      showCreateCommunity: false
+    };
   },
   computed: {
     currentComponent() {
-      switch(this.activeMenu) {
+      switch (this.activeMenu) {
         case 'users': return 'UsersPanel';
         case 'sensors': return 'SensorsPanel';
         case 'communities': return 'CommunitiesPanel';
-        case 'overview':
         default: return 'OverviewPanel';
       }
     },
     pageTitle() {
-      switch(this.activeMenu) {
-        case 'users': return 'Users Management';
-        case 'sensors': return 'Sensors Management';
-        case 'communities': return 'Communities Management';
-        case 'overview':
-        default: return 'Dashboard Overview';
+      switch (this.activeMenu) {
+        case 'users': return 'Gestão de Utilizadores';
+        case 'sensors': return 'Gestão de Sensores';
+        case 'communities': return 'Gestão de Comunidades';
+        default: return 'Resumo Geral';
       }
     }
   },
   methods: {
     handleMenuChange(menuItem) {
       this.activeMenu = menuItem;
-      // Here you would fetch the relevant data for the selected menu item
       this.loadComponentData();
     },
     handleLogout() {
-      // Handle logout logic here
-      useUserStore.logout();
+      useUserStore().logout();
       this.$router.push('/login');
     },
     loadComponentData() {
-      // Simulate fetching data based on active menu
-      // In a real application, this would be an API call
-      switch(this.activeMenu) {
+      // Aqui colocas as chamadas reais à API
+      switch (this.activeMenu) {
         case 'users':
           this.componentData = {
             users: [
-              { id: 1, name: 'Alice Johnson', email: 'alice@example.com', role: 'Admin', status: 'Active' },
-              { id: 2, name: 'Bob Smith', email: 'bob@example.com', role: 'User', status: 'Active' },
-              { id: 3, name: 'Carol Davis', email: 'carol@example.com', role: 'User', status: 'Inactive' }
+              { id: 1, name: 'Alice', email: 'alice@example.com', type: 'admin' },
+              { id: 2, name: 'Bob', email: 'bob@example.com', type: 'normal' }
             ]
           };
           break;
         case 'sensors':
           this.componentData = {
             sensors: [
-              { id: 'SEN-001', location: 'Downtown', type: 'Temperature', status: 'Online' },
-              { id: 'SEN-002', location: 'Suburb', type: 'Humidity', status: 'Online' },
-              { id: 'SEN-003', location: 'Park', type: 'Air Quality', status: 'Offline' }
+              { id: 'S1', location: 'Lisboa', type: 'Temperatura', status: 'Ativo' }
             ]
           };
           break;
         case 'communities':
           this.componentData = {
             communities: [
-              { id: 1, name: 'Weather Enthusiasts', members: 125, region: 'Global' },
-              { id: 2, name: 'City Climate Watch', members: 43, region: 'Urban' },
-              { id: 3, name: 'Rural Weather Network', members: 67, region: 'Rural' }
+              { id: 1, location: 'Lisboa', members_count: 25 }
             ]
           };
           break;
@@ -115,207 +131,75 @@ export default {
         default:
           this.componentData = {
             stats: {
-              users: 243,
-              sensors: 58,
-              communities: 12,
-              activeSensors: 51
-            },
-            recentActivity: [
-              { type: 'user', message: 'New user registered', time: '5 minutes ago' },
-              { type: 'sensor', message: 'Sensor SEN-003 went offline', time: '1 hour ago' },
-              { type: 'community', message: 'New community created: Weather Watchers', time: '1 day ago' }
-            ]
+              users: 2,
+              sensors: 1,
+              communities: 1
+            }
           };
           break;
       }
+    },
+    openCreateUserForm() {
+      this.showCreateUser = true;
+    },
+    openCreateSensorForm() {
+      this.showCreateSensor = true;
+    },
+    openCreateCommunityForm() {
+      this.showCreateCommunity = true;
+    },
+    onFormSubmitted() {
+      this.showCreateUser = false;
+      this.showCreateSensor = false;
+      this.showCreateCommunity = false;
+      this.loadComponentData(); // Recarrega após submissão
     }
   },
-  created() {
+  mounted() {
     this.loadComponentData();
   }
-}
+};
 </script>
 
 <style scoped>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-.page-layout {
+.dashboard-container {
   display: flex;
   height: 100vh;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #f5f7fa;
 }
 
-.sidebar-wrapper {
-  width: 250px;
-  background-color: #fff;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
-  padding: 20px 0;
-  overflow-y: auto;
-}
-
-.content-wrapper {
+.dashboard-content {
   flex: 1;
-  padding: 25px 30px;
+  padding: 20px;
+  background: #f5f7fa;
   overflow-y: auto;
-  background-color: #f5f7fa;
-  position: relative;
 }
 
-/* Título */
-h2 {
-  font-size: 24px;
-  color: #2c3e50;
-  font-weight: 600;
-  margin-bottom: 25px;
-  text-align: center;
-}
-
-/* Container de definições */
-.settings-container {
-  width: 100%;
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 30px 40px;
-  border-radius: 12px;
-  background-color: #fff;
-  color: #222;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.12);
-}
-
-/* Formulários */
-.form-group {
-  margin-bottom: 20px;
+.content-header {
   display: flex;
-  flex-direction: column;
-}
-
-label {
-  font-weight: 600;
-  margin-bottom: 6px;
-  color: #333;
-}
-
-input[type='text'],
-input[type='number'],
-select {
-  background-color: #f5f7fa;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  padding: 8px 12px;
-  color: #333;
-  font-size: 14px;
-  transition: border-color 0.3s ease;
-}
-
-input[type='text']::placeholder,
-input[type='number']::placeholder {
-  color: #999;
-}
-
-input[type='text']:focus,
-input[type='number']:focus,
-select:focus {
-  outline: none;
-  border-color: #41b06e;
-  background-color: #e9f5ec;
-  color: #222;
-}
-
-/* Alert thresholds */
-.alert-thresholds {
-  border: 1px solid #41b06e;
-  border-radius: 6px;
-  padding: 15px 20px;
-  margin-bottom: 20px;
-  color: #333;
-}
-
-.alert-thresholds legend {
-  font-weight: 700;
-  font-size: 16px;
-  margin-bottom: 15px;
-  color: #41b06e;
-}
-
-.alert-row {
-  display: flex;
+  justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 20px;
+}
+
+.header-actions {
+  display: flex;
   gap: 10px;
 }
 
-.alert-row label {
-  min-width: 100px;
-  color: #4a7f57;
-}
-
-.alert-row input[type='number'] {
-  width: 80px;
-  text-align: center;
-}
-
-/* Checkbox */
-.checkbox-group label {
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-weight: 600;
-  color: #333;
-}
-
-.checkbox-group input[type='checkbox'] {
-  transform: scale(1.3);
-  cursor: pointer;
-}
-
-/* Botão de guardar */
-.save-btn {
-  width: 100%;
+.refresh-btn,
+.create-btn {
   background-color: #41b06e;
   border: none;
-  border-radius: 8px;
-  padding: 12px 0;
-  font-weight: 700;
-  font-size: 16px;
   color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-weight: 600;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
-.save-btn:hover {
-  background-color: #2d7d4b;
-}
-
-/* Responsivo */
-@media screen and (max-width: 768px) {
-  .page-layout {
-    flex-direction: column;
-  }
-
-  .sidebar-wrapper {
-    width: 100%;
-    height: auto;
-    position: relative;
-  }
-
-  .content-wrapper {
-    width: 100%;
-    padding: 15px;
-  }
-
-  .settings-container {
-    padding: 20px;
-  }
+.refresh-btn:hover,
+.create-btn:hover {
+  background-color: #2e8753;
 }
 </style>
-
