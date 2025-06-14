@@ -11,8 +11,14 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please provide an email"],
     unique: true,
-    lowercase: true,
-    trim: true,
+    validate: {
+      validator: (value) => {
+        const re =
+          /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+        return value.match(re);
+      },
+      message: "Please enter a valid email address.",
+    },
   },
   password: {
     type: String,
@@ -29,9 +35,9 @@ const userSchema = new mongoose.Schema({
     enum: ["user", "admin"],
     default: "user",
   },
-   isVerified: {
+  isVerified: {
     type: Boolean,
-    default: false
+    default: false,
   },
   createdAt: {
     type: Date,
@@ -42,7 +48,7 @@ const userSchema = new mongoose.Schema({
   },
   cloudinary_id: {
     type: String,
-  }
+  },
 });
 
 // Hashear pass antes de guardar

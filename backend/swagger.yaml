@@ -11,7 +11,7 @@ servers:
 security:
   - bearerAuth: []
 paths:
-  /users/register:
+  /user/register:
     post:
       summary: Registar novo utilizador
       tags:
@@ -27,7 +27,7 @@ paths:
           description: Conta criada
         "400":
           description: Email já em uso
-  /users/login:
+  /user/login:
     post:
       summary: Login
       tags:
@@ -43,7 +43,7 @@ paths:
           description: Login bem sucedido
         "401":
           description: Email ou senha incorretos
-  "/users/verify-email/{token}":
+  "/user/verify-email/{token}":
     get:
       summary: Verificar email
       tags:
@@ -59,7 +59,7 @@ paths:
           description: Email verificado com sucesso
         "400":
           description: Token inválido ou expirado
-  /users/refresh-token:
+  /user/refresh-token:
     post:
       summary: Renovar access token
       tags:
@@ -78,7 +78,7 @@ paths:
       responses:
         "200":
           description: Novo token JWT
-  /users/me:
+  /user/me:
     get:
       summary: Obter dados do utilizador autenticado
       tags:
