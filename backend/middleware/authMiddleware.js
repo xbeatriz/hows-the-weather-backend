@@ -4,7 +4,6 @@ import User from "../models/User.js";
 
 const protect = async (req, res, next) => {
   try {
-    // 1) Get token from the Authorization header
     let token;
     if (
       req.headers.authorization &&
@@ -13,42 +12,54 @@ const protect = async (req, res, next) => {
       token = req.headers.authorization.split(" ")[1];
     }
 
-    if (!token) {
-      return next(
-        new AppError("You are not logged in! Please log in to get access.", 401)
-      );
-    }
-
-    // 2) Verify token
     let decoded;
-    try {
-      decoded = jwt.verifyToken(token);
-    } catch (error) {
-      return next(
-        new AppError("Invalid or malformed token. Please log in again.", 401)
-      );
+
+    // Tentar verificar o accessToken
+    if (token) {
+      try {
+        decoded = jwt.verifyAuthToken(token);
+      } catch (err) {
+        // Se o accessToken falhar, tenta o refreshToken
+        const refreshToken = req.headers['x-refresh-token'] || req.body.refreshToken;
+        if (!refreshToken) {
+          return next(new AppError("Token expirado. Faça login novamente.", 401));
+        }
+
+        try {
+          const refreshDecoded = jwt.verifyRefreshToken(refreshToken);
+          // Se o refreshToken for válido, gera novo accessToken
+          const newAccessToken = jwt.generateAuthToken(refreshDecoded.id);
+          // Podes enviar esse novo token nos headers ou no corpo
+          res.setHeader("x-access-token", newAccessToken);
+
+          decoded = refreshDecoded;
+        } catch (refreshErr) {
+          return next(new AppError("Sessão expirada. Faça login novamente.", 401));
+        }
+      }
+    } else {
+      return next(new AppError("Não autenticado. Token ausente.", 401));
     }
 
-    // 3) Check if the user exists
     const currentUser = await User.findById(decoded.id);
     if (!currentUser) {
-      return next(
-        new AppError("The user belonging to this token no longer exists.", 401)
-      );
+      return next(new AppError("Este utilizador já não existe.", 401));
     }
 
-    // 4) Grant access and attach the user to the request object
     req.user = currentUser;
     next();
-  } catch (error) {
-    next(error); 
+  } catch (err) {
+    next(err);
   }
 };
+
 
 const checkRole = (requiredRole) => {
   return (req, res, next) => {
     if (!req.user || req.user.role !== requiredRole) {
-      return next(new AppError("You do not have permission to perform this action", 403));
+      return next(
+        new AppError("You do not have permission to perform this action", 403)
+      );
     }
     next();
   };

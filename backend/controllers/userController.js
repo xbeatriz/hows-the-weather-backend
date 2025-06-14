@@ -2,7 +2,6 @@ import User from "../models/User.js";
 import jwt from "../utils/jwt.js";
 import AppError from "../utils/errorHandler.js";
 import { sendEmail } from "../utils/sendEmail.js";
-import jwtLib from "jsonwebtoken";
 
 class userController {
   // Registar
@@ -15,13 +14,10 @@ class userController {
 
       const user = await User.create(req.body);
 
-      const verificationToken = jwtLib.sign(
-        { userId: user._id },
-        process.env.EMAIL_VERIFICATION_SECRET,
-        { expiresIn: "1d" }
-      );
+      const verificationToken = jwt.generateEmailVerificationToken(user._id);
 
       const verificationLink = `${process.env.FRONTEND_URL}/verify-email/${verificationToken}`;
+
       const html = `
   <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
     <h2>Olá ${user.name},</h2>
@@ -45,7 +41,7 @@ class userController {
 
       res
         .status(201)
-        .json({ message: "Account created. Please verify your email." });
+        .json({ message: "Conta criada. Por favor, verifica o seu email." });
     } catch (err) {
       next(err);
     }
@@ -55,20 +51,27 @@ class userController {
   async login(req, res, next) {
     try {
       const { email, password } = req.body;
+
       const user = await User.findOne({ email }).select("+password");
       if (!user || !(await user.correctPassword(password, user.password))) {
-        return next(new AppError("Incorrect email or password", 401));
+        return next(new AppError("Email ou senha incorretos", 401));
       }
 
       if (!user.isVerified) {
         return next(
-          new AppError("Please verify your email before logging in", 401)
+          new AppError("Por favor, verifique seu email antes de entrar", 401)
         );
       }
 
-      const token = jwt.generateToken(user._id);
+      const token = jwt.generateAuthToken(user._id);
+      const refreshToken = jwt.generateRefreshToken(user._id);
+
       user.password = undefined;
-      res.status(200).json({ token, data: { user } });
+
+      res.status(200).json({
+        accessToken: token,
+        refreshToken,
+      });
     } catch (err) {
       next(err);
     }
@@ -78,28 +81,48 @@ class userController {
   async verifyEmail(req, res, next) {
     try {
       const { token } = req.params;
-      const decoded = jwtLib.verify(token, process.env.EMAIL_VERIFICATION_SECRET);
+      const decoded = jwt.verifyEmailVerificationToken(token);
+
       const user = await User.findById(decoded.userId);
-      if (!user) return next(new AppError("User not found", 404));
+      if (!user) return next(new AppError("Usuário não encontrado", 404));
 
       if (user.isVerified) {
-        return res.status(400).json({ message: "Email already verified." });
+        return res.status(400).json({ message: "Email já verificado." });
       }
 
       user.isVerified = true;
       await user.save();
-      user.password = undefined;
-      const jwttoken = jwt.generateToken(user._id);
-      return res.status(200).json({
-        message: "Email verified successfully.",
-        token: jwttoken,
-        data: { user }
-      });
 
+      user.password = undefined;
+      const authToken = jwt.generateAuthToken(user._id);
+
+      res.status(200).json({
+        message: "Email verificado com sucesso.",
+        token: authToken,
+        data: { user },
+      });
     } catch (err) {
-      next(new AppError("Invalid or expired verification link", 400));
+      next(new AppError("Link de verificação inválido ou expirado", 400));
     }
   }
+
+  async refreshToken(req, res, next) {
+    try {
+      const { refreshToken } = req.body;
+      if (!refreshToken) {
+        return next(new AppError("Refresh token não fornecido", 400));
+      }
+
+      const decoded = jwt.verifyRefreshToken(refreshToken);
+
+      const newToken = jwt.generateAuthToken(decoded.id);
+
+      res.status(200).json({ token: newToken });
+    } catch (err) {
+      next(err);
+    }
+  }
+
   // Dados do utilizador autenticado
   async getMe(req, res, next) {
     try {

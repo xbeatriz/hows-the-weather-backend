@@ -15,13 +15,15 @@
   "dependencies": {
     "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.2",
+    "cloudinary": "^2.6.1",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.7",
+    "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.13.2",
+    "mongoose": "^8.15.2",
     "morgan": "^1.10.0",
+    "multer": "^2.0.1",
     "node-cron": "^4.1.0",
     "nodemailer": "^7.0.3"
   }

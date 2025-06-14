@@ -3,21 +3,20 @@ POST http://localhost:3000/api/user/register
 Content-Type: application/json
 
 {
-  "name": "admin",
-  "email": "admin@email.com",
+  "name": "isa",
+  "email": "ibertucciti@gmail.com",
   "password": "123456789"
 }
 
 ### Verify Email
-GET http://localhost:3000/api/user/verify-email/<cole-o-token-aqui>
-
+GET http://localhost:3000/api/user/verify-email/<token>
 
 ### Login User
 POST http://localhost:3000/api/user/login
 Content-Type: application/json
 
 {
-  "email": "admin@email.com",
+  "email": "isabella.bertucci17@gmail.com",
   "password": "123456789"
 }
 
@@ -31,7 +30,7 @@ Authorization: Bearer <your_jwt_token_here>
 Content-Type: application/json
 
 {
-  "name": "new_name_yey"
+  "name": "new_name_yey",
 }
 
 ### DELETE LOGGED USER

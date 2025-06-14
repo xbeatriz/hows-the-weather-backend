@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 import express from "express";
-
+// Load environment variables
+dotenv.config(); 
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
@@ -13,8 +14,7 @@ import errorHandler from "./middleware/errorMiddleware.js";
 
 import "./cron/sensorCron.js";
 
-// Load environment variables
-dotenv.config();
+
 
 const app = express();
 
@@ -41,3 +41,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port http://localhost:${PORT}`);
 });
+
