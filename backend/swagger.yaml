@@ -109,7 +109,7 @@ paths:
       responses:
         "200":
           description: Conta apagada
-  /users:
+  /user:
     get:
       summary: Obter todos os utilizadores (admin)
       tags:
@@ -117,7 +117,7 @@ paths:
       responses:
         "200":
           description: Lista de utilizadores
-  "/users/{id}":
+  "/user/{id}":
     get:
       summary: Obter utilizador por ID
       tags:
@@ -170,7 +170,7 @@ paths:
           description: Utilizador apagado
         "404":
           description: Utilizador não encontrado
-  /users/me/configs:
+  /user/me/configs:
     get:
       summary: Obter configurações do utilizador
       tags:
