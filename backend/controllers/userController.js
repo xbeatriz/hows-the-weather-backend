@@ -22,14 +22,24 @@ class userController {
       );
 
       const verificationLink = `${process.env.FRONTEND_URL}/verify-email/${verificationToken}`;
-
       const html = `
-        <h2>Olá ${user.name}</h2>
-        <p>Confirma o teu email clicando no link abaixo:</p>
-        <a href="${verificationLink}">Verificar Email</a>
-        <p>Ou copiando o link:</p>
-        <p>${verificationLink}</p>
-      `;
+  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+    <h2>Olá ${user.name},</h2>
+    <p>Obrigado por te registares. Por favor, confirma o teu email clicando no botão abaixo:</p>
+
+    <p style="text-align: center; margin: 30px 0;">
+      <a href="${verificationLink}" style="background-color: #4CAF50; color: white; padding: 12px 20px; text-decoration: none; border-radius: 4px;">
+        Verificar Email
+      </a>
+    </p>
+
+    <p>Ou copia e cola este link:</p>
+  <p><code>http://localhost:5173/verify-email/</code><br /><code>${verificationToken}</code></p>
+
+    <hr />
+    <p style="font-size: 12px; color: #777;">Se não foste tu quem pediu esta verificação, ignora este email.</p>
+  </div>
+`;
 
       await sendEmail(user.email, "Verifica o teu e-mail", html);
 
