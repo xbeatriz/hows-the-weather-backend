@@ -1,11 +1,13 @@
 import dotenv from "dotenv";
 import express from "express";
 // Load environment variables
-dotenv.config(); 
+dotenv.config();
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import connectDB from "./config/db.js";
+import swaggerUi from "swagger-ui-express";
+import YAML from "yamljs";
 
 // Import routes from the index.js file in the routes folder
 import routes from "./routes/index.js";
@@ -13,8 +15,6 @@ import routes from "./routes/index.js";
 import errorHandler from "./middleware/errorMiddleware.js";
 
 import "./cron/sensorCron.js";
-
-
 
 const app = express();
 
@@ -37,8 +37,12 @@ app.get("/", (req, res) => {
 // Error handling middleware
 app.use(errorHandler);
 
+// Swagger setup
+const swaggerDocument = YAML.load("./swagger.yaml");
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port http://localhost:${PORT}`);
+  console.log(`Swagger disponível em http://localhost:${PORT}/api-docs`);
 });
-
