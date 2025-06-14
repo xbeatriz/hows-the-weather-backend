@@ -8,6 +8,10 @@ Content-Type: application/json
   "password": "123456789"
 }
 
+### Verify Email
+GET http://localhost:3000/api/user/verify-email/<cole-o-token-aqui>
+
+
 ### Login User
 POST http://localhost:3000/api/user/login
 Content-Type: application/json
