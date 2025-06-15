@@ -28,7 +28,7 @@ const userSchema = new mongoose.Schema({
   },
   location: {
     type: String,
-    default: "Lisboa, Portugal",
+    default: "Lisboa",
   },
   role: {
     type: String,

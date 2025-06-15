@@ -15,12 +15,16 @@
 
 <script setup>
 import { useNotificationStore } from "@/stores/notificationStore";
+import { computed } from 'vue'
+
 
 const notificationStore = useNotificationStore();
 
 const unreadNotifications = computed(() =>
-  notificationStore.notifications.filter(n => !n.read)
-);
+  Array.isArray(notificationStore.notifications)
+    ? notificationStore.notifications.filter(n => !n.read)
+    : []
+)
 
 const markAsRead = (id) => {
   notificationStore.markAsRead(id);

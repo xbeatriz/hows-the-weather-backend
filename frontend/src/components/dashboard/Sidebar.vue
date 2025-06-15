@@ -32,10 +32,12 @@
   </div>
 </template>
 
+
 <script>
 import router from '@/router';
 import { computed } from 'vue';
 import { useUserStore } from '@/stores/userStore';
+
 export default {
   name: "Sidebar",
   props: {
@@ -52,14 +54,6 @@ export default {
       default: "overview",
     },
     headerText: {
-    type: String,
-    default: "Weather Admin",
-  },
-  activeMenu: {
-    type: String,
-    default: "overview",
-  },
-    headerText: {
       type: String,
       default: "Weather Admin",
     },
@@ -72,35 +66,36 @@ export default {
       this.$emit("logout");
     },
     openSettings() {
-      router.push({ name: 'settings' });
+      router.push({ name: 'Settings' });
     },
   },
   setup() {
-  const userStore = useUserStore();
-  const user = userStore.user;
+    const userStore = useUserStore();
+    const user = userStore.user;
 
-  const menuItems = computed(() => {
-    const items = [
-      { id: "overview", name: "Overview", icon: ["fas", "tachometer-alt"] },
-      { id: "sensors", name: "Sensors", icon: ["fas", "microchip"] },
-      { id: "communities", name: "Communities", icon: ["fas", "city"] },
-    ];
+    const menuItems = computed(() => {
+      const items = [
+        { id: "overview", name: "Overview", icon: ["fas", "tachometer-alt"] },
+        { id: "sensors", name: "Sensors", icon: ["fas", "microchip"] },
+        { id: "communities", name: "Communities", icon: ["fas", "city"] },
+      ];
 
-    if (user.role === "admin") {
-      items.unshift({ id: "admin-dashboard", name: "Admin Dashboard", icon: ["fas", "tools"] });
-      items.splice(2, 0, { id: "users", name: "Users", icon: ["fas", "users"] });
-    }
+      if (user.role === "admin") {
+        items.splice(2, 0, { id: "users", name: "Users", icon: ["fas", "users"] });
+        items.push({ id: "pendingPosts", name: "Verificar Posts", icon: ["fas", "check-circle"] });
+      }
 
-    return items;
-  });
+      return items;
+    });
 
-  return {
-    user,
-    menuItems,
-  };
-},
+    return {
+      user,
+      menuItems,
+    };
+  },
 };
 </script>
+
 
 <style scoped>
 .sidebar {

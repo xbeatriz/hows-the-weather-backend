@@ -52,7 +52,6 @@ class SensorController {
     try {
       const sensor = await Sensor.findById(req.params.id);
       if (!sensor) return next(new AppError("Sensor not found", 404));
-
       res.status(200).json({
         status: "success",
         data: { sensor },

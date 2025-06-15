@@ -71,6 +71,7 @@ class userController {
       res.status(200).json({
         accessToken: token,
         refreshToken,
+        data:{user}
       });
     } catch (err) {
       next(err);
@@ -156,14 +157,18 @@ class userController {
   }
 
   // Obter todos os utilizadores (admin)
-  async getAllUsers(req, res, next) {
-    try {
-      const users = await User.find();
-      res.status(200).json(users);
-    } catch (err) {
-      next(err);
-    }
+async getAllUsers(req, res, next) {
+  try {
+    const users = await User.find();
+    res.status(200).json({
+      status: "success",
+      results: users.length,
+      data: { users }
+    });
+  } catch (err) {
+    next(err);
   }
+}
 
   // Obter utilizador por ID (admin)
   async getUserById(req, res, next) {

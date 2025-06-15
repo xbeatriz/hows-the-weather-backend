@@ -76,7 +76,7 @@ router.beforeEach((to, from, next) => {
   if (to.matched.length === 0) {
     console.error('Rota não encontrada:', to.path);
     next('/');
-  } else if (to.meta.requiresAuth && !userStore.token) {
+  } else if (to.meta.requiresAuth && !userStore.accessToken) {
     console.warn('Acesso negado: precisa de login');
     next('/login');
   } else {

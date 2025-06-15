@@ -19,6 +19,7 @@ router.get("/", CommunityController.getAllCommunities);
 router.post("/", checkAdminToken, CommunityController.createCommunity);
 router.patch("/:id", checkAdminToken, CommunityController.updateCommunity);
 router.delete("/:id", checkAdminToken, CommunityController.deleteCommunity);
+router.patch("/:id/posts/:post_id/approve", checkAdminToken, CommunityController.approveCommunityPost);
 
 
 export default router;

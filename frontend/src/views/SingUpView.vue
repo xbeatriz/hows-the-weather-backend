@@ -16,7 +16,17 @@
             <label for="email">Email Address</label>
             <input type="email" id="email" v-model="email" placeholder="you@example.com" />
           </div>
-
+          <div class="form-group">
+            <label for="location">Localização</label>
+            <select id="location" v-model="location">
+              <option value="" disabled>Selecione sua localização</option>
+              <option value="Lisboa">Lisboa</option>
+              <option value="Porto">Porto</option>
+              <option value="Coimbra">Coimbra</option>
+              <option value="Faro">Faro</option>
+              <option value="Braga">Braga</option>
+            </select>
+          </div>
           <div class="form-group">
             <label for="password">Password</label>
             <input type="password" id="password" v-model="password" placeholder="Enter 6 character or more" />
@@ -28,21 +38,6 @@
           </div>
 
           <button @click="signUp" class="login-button">SIGN UP</button>
-
-          <div class="or-separator">
-            <span>Or sign up with</span>
-          </div>
-
-          <div class="social-buttons">
-            <button class="google-btn">
-              <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" alt="Google" />
-              Google
-            </button>
-            <button class="facebook-btn">
-              <img src="https://cdn-icons-png.flaticon.com/512/5968/5968764.png" alt="Facebook" />
-              Facebook
-            </button>
-          </div>
         </div>
 
         <div class="login-image-section">
@@ -67,7 +62,8 @@ export default {
       name: '',
       email: '',
       password: '',
-      confirmPassword: ''
+      confirmPassword: '',
+      location: ''
     }
   },
   methods: {
@@ -86,7 +82,8 @@ export default {
           body: JSON.stringify({
             name: this.name,
             email: this.email,
-            password: this.password
+            password: this.password,
+            location: this.location
           })
         })
 
@@ -104,6 +101,7 @@ export default {
         this.email = ''
         this.password = ''
         this.confirmPassword = ''
+        this.location = ''
 
       } catch (error) {
         alert('Erro na comunicação com o servidor.')
@@ -294,6 +292,20 @@ input:focus {
 .facebook-btn img {
   width: 18px;
   height: 18px;
+}
+
+select {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+select:focus {
+  border-color: #141E46;
+  outline: none;
 }
 
 @media (max-width: 768px) {

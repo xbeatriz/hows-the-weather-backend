@@ -33,21 +33,6 @@
             <span v-if="!isLoading">LOGIN</span>
             <span v-else>LOGGING IN...</span>
           </button>
-
-          <div class="or-separator">
-            <span>Or login with</span>
-          </div>
-
-          <div class="social-buttons">
-            <button class="google-btn">
-              <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" alt="Google">
-              Google
-            </button>
-            <button class="facebook-btn">
-              <img src="https://cdn-icons-png.flaticon.com/512/5968/5968764.png" alt="Facebook">
-              Facebook
-            </button>
-          </div>
         </div>
 
         <div class="login-image-section">
@@ -113,40 +98,37 @@ export default {
       try {
         const response = await fetch('http://localhost:3000/api/user/login', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            email: this.email,
-            password: this.password
-          })
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: this.email, password: this.password })
         });
 
+        const result = await response.json();
         if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || 'Login failed');
+          throw new Error(result.message || 'Login failed');
         }
 
-        const data = await response.json();
 
-        userStore.setUserData(data.data.user, data.token);
+        userStore.setUserData(result.data.user, result.accessToken, result.refreshToken);
+
 
         if (this.rememberMe) {
-          localStorage.setItem('token', data.token);
-          localStorage.setItem('user', JSON.stringify(data.data.user));
+          localStorage.setItem('accesstoken', userStore.accessToken);
+          localStorage.setItem('refreshtoken', userStore.refreshToken);
+          localStorage.setItem('user', JSON.stringify(userStore.user));
         }
 
-
         this.$router.push('/dashboard');
+
       } catch (error) {
         console.error('Login failed:', error.message);
-        // Mostrar erro de forma mais amigável
         this.errors.email = '';
         this.errors.password = error.message || 'Invalid email or password';
-      } finally {
+      }
+      finally {
         this.isLoading = false;
       }
     }
+
   }
 }
 </script>

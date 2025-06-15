@@ -1,10 +1,6 @@
 <template>
   <div class="dashboard-container">
-    <Sidebar
-      :activeMenu="activeMenu"
-      @menuChange="handleMenuChange"
-      @logout="handleLogout"
-    />
+    <Sidebar :activeMenu="activeMenu" @menuChange="handleMenuChange" @logout="handleLogout" />
     <div class="dashboard-content">
       <div class="content-header">
         <h1>{{ pageTitle }}</h1>
@@ -42,24 +38,24 @@ import Sidebar from '@/components/dashboard/Sidebar.vue';
 import OverviewPanel from '@/components/dashboard/OverviewPanel.vue';
 import UsersPanel from '@/components/dashboard/UsersPanel.vue';
 import SensorsPanel from '@/components/dashboard/SensorsPanel.vue';
-import CommunitiesPanel from '@/components/dashboard/CommunitiesPanel.vue';
-
-import Modal from '@/components/common/Modal.vue';
+import CommunitiesPanel from '@/components/dashboard/ComunitiesPanel.vue';
+import PendingPostsPanel from '@/components/dashboard/PendingPostPanel.vue';
 import CreateUserForm from '@/components/forms/CreateUserForm.vue';
 import CreateSensorForm from '@/components/forms/CreateSensorForm.vue';
 import CreateCommunityForm from '@/components/forms/CreateCommunityForm.vue';
-
+import Modal from '@/components/common/Modal.vue';
 import { useUserStore } from '@/stores/userStore';
 
 export default {
   name: 'DashboardView',
   components: {
     Sidebar,
+    Modal,
     OverviewPanel,
     UsersPanel,
     SensorsPanel,
     CommunitiesPanel,
-    Modal,
+    PendingPostsPanel,
     CreateUserForm,
     CreateSensorForm,
     CreateCommunityForm
@@ -69,18 +65,25 @@ export default {
       activeMenu: 'overview',
       componentData: {},
 
-      // Controlo de modais
+      // Modais
       showCreateUser: false,
       showCreateSensor: false,
-      showCreateCommunity: false
+      showCreateCommunity: false,
+
+      userStore: useUserStore() // <-- adicionar aqui
     };
   },
   computed: {
     currentComponent() {
+      if (this.activeMenu === 'pendingPosts' && this.userStore.user.role !== 'admin') {
+        return 'OverviewPanel'; // ou podes redirecionar, se preferires
+      }
+
       switch (this.activeMenu) {
         case 'users': return 'UsersPanel';
         case 'sensors': return 'SensorsPanel';
         case 'communities': return 'CommunitiesPanel';
+        case 'pendingPosts': return 'PendingPostsPanel';
         default: return 'OverviewPanel';
       }
     },
@@ -89,6 +92,7 @@ export default {
         case 'users': return 'Gestão de Utilizadores';
         case 'sensors': return 'Gestão de Sensores';
         case 'communities': return 'Gestão de Comunidades';
+        case 'pendingPosts': return 'Aprovação de Posts';
         default: return 'Resumo Geral';
       }
     }
@@ -103,39 +107,121 @@ export default {
       this.$router.push('/login');
     },
     loadComponentData() {
-      // Aqui colocas as chamadas reais à API
+      const token = this.userStore.accessToken || localStorage.getItem('accessToken');
+      const refreshToken = this.userStore.refreshToken || localStorage.getItem('refreshToken');
+      const headers = {
+        Authorization: `Bearer ${token}`,
+        'x-refresh-token': refreshToken,
+      };
+
       switch (this.activeMenu) {
         case 'users':
-          this.componentData = {
-            users: [
-              { id: 1, name: 'Alice', email: 'alice@example.com', type: 'admin' },
-              { id: 2, name: 'Bob', email: 'bob@example.com', type: 'normal' }
-            ]
-          };
+          fetch('http://localhost:3000/api/user', { headers })
+            .then(res => {
+              if (!res.ok) throw new Error('Erro ao carregar usuários');
+              return res.json();
+            })
+            .then(data => {
+              this.componentData = { users: data.data.users || [] };
+            })
+            .catch(() => {
+              this.componentData = { users: [] };
+            });
           break;
+
         case 'sensors':
-          this.componentData = {
-            sensors: [
-              { id: 'S1', location: 'Lisboa', type: 'Temperatura', status: 'Ativo' }
-            ]
-          };
+          fetch('http://localhost:3000/api/sensors', { headers })
+            .then(res => {
+              if (!res.ok) throw new Error('Erro ao carregar sensores');
+              return res.json();
+            })
+            .then(data => {
+              this.componentData = { sensors: data.data.sensors || [] };
+            })
+            .catch(() => {
+              this.componentData = { sensors: [] };
+            });
           break;
+
         case 'communities':
-          this.componentData = {
-            communities: [
-              { id: 1, location: 'Lisboa', members_count: 25 }
-            ]
-          };
+          fetch('http://localhost:3000/api/communities', {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          })
+            .then(res => {
+              if (!res.ok) throw new Error('Erro ao carregar comunidades');
+              return res.json();
+            })
+            .then(data => {
+              this.communities = data.data.communities || []
+            })
+            .catch(() => {
+              this.componentData = { communities: [] };
+            });
           break;
+
+        case 'pendingPosts':
+          if (this.userStore.user.role !== 'admin') {
+            this.componentData = {};
+            break;
+          }
+          fetch('http://localhost:3000/api/communities', { headers })
+            .then(res => {
+              if (!res.ok) throw new Error('Erro ao carregar posts pendentes');
+              return res.json();
+            })
+            .then(data => {
+              const pendingPosts = [];
+              for (const community of data.communities || []) {
+                for (const post of community.community_posts || []) {
+                  if (post.status === 'waiting') {
+                    pendingPosts.push({ ...post, community_id: community._id });
+                  }
+                }
+              }
+              this.componentData = { pendingPosts };
+            })
+            .catch(() => {
+              this.componentData = { pendingPosts: [] };
+            });
+          break;
+
         case 'overview':
         default:
-          this.componentData = {
-            stats: {
-              users: 2,
-              sensors: 1,
-              communities: 1
-            }
-          };
+          Promise.all([
+            fetch('http://localhost:3000/api/user', { headers }).then(res => {
+              if (!res.ok) throw new Error('Erro no fetch users');
+              return res.json();
+            }),
+            fetch('http://localhost:3000/api/sensors', { headers }).then(res => {
+              if (!res.ok) throw new Error('Erro no fetch sensors');
+              return res.json();
+            }),
+            fetch('http://localhost:3000/api/communities', { headers }).then(res => {
+              if (!res.ok) throw new Error('Erro no fetch communities');
+              return res.json();
+            }),
+          ])
+            .then(([usersData, sensorsData, communitiesData]) => {
+              // Contar sensores ativos
+              const activeSensorsCount = (sensorsData.data.sensors || []).filter(sensor => sensor.status === 'active').length;
+
+              this.componentData = {
+                stats: {
+                  users: usersData.data.users?.length || 0,
+                  sensors: sensorsData.data.sensors?.length || 0,
+                  activeSensors: activeSensorsCount,
+                  communities: communitiesData.data.communities?.length || 0,
+                },
+              };
+            })
+            .catch((error) => {
+              console.error(error);
+              this.componentData = {
+                stats: { users: 0, sensors: 0, activeSensors: 0, communities: 0 },
+              };
+            });
           break;
       }
     },
@@ -172,7 +258,12 @@ export default {
   padding: 20px;
   background: #f5f7fa;
   overflow-y: auto;
+  color: #222;
+  /* cor de texto escura para legibilidade */
+  font-family: Arial, sans-serif;
+  font-size: 16px;
 }
+
 
 .content-header {
   display: flex;

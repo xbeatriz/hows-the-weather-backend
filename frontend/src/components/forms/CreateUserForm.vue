@@ -21,7 +21,7 @@
       <div class="form-group">
         <label>Tipo</label>
         <select v-model="form.role">
-          <option value="normal">Normal</option>
+          <option value="user">User</option>
           <option value="admin">Admin</option>
         </select>
       </div>
@@ -39,7 +39,7 @@ export default {
         email: '',
         password: '',
         location: '',
-        role:normal
+        role:"user"
       }
     }
   },

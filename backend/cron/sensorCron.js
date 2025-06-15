@@ -35,13 +35,19 @@ cron.schedule("* * * * *", async () => {
     for (const sensor of sensors) {
       const simulatedValue = generateSimulatedValue(sensor.type);
 
-      sensor.last_reading = {
+      const reading = {
         timestamp: now,
         values: {
           ...sensor.last_reading?.values,
           [sensor.type]: simulatedValue
         }
       };
+
+      // Atualiza last_reading
+      sensor.last_reading = reading;
+
+      // Adiciona ao array de readings
+      sensor.readings.push(reading);
 
       await sensor.save();
       console.log(`📈 Sensor ${sensor._id} (${sensor.type} - ${sensor.location}) atualizado: ${simulatedValue}`);
