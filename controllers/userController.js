@@ -71,7 +71,7 @@ class userController {
       res.status(200).json({
         accessToken: token,
         refreshToken,
-        data:{user}
+        data: { user },
       });
     } catch (err) {
       next(err);
@@ -85,7 +85,7 @@ class userController {
       const decoded = jwt.verifyEmailVerificationToken(token);
 
       const user = await User.findById(decoded.userId);
-      if (!user) return next(new AppError("Usuário não encontrado", 404));
+      if (!user) return next(new AppError("Utilizador não encontrado", 404));
 
       if (user.isVerified) {
         return res.status(400).json({ message: "Email já verificado." });
@@ -140,7 +140,7 @@ class userController {
       const user = await User.findByIdAndUpdate(req.user._id, updates, {
         new: true,
       });
-      res.status(200).json({ message: "User updated", data: { user } });
+      res.status(200).json({ message: "User atualizado", data: { user } });
     } catch (err) {
       next(err);
     }
@@ -150,31 +150,31 @@ class userController {
   async deleteMe(req, res, next) {
     try {
       await User.findByIdAndDelete(req.user._id);
-      res.status(200).json({ message: "Account deleted" });
+      res.status(200).json({ message: "Conta eliminada com sucesso" });
     } catch (err) {
       next(err);
     }
   }
 
   // Obter todos os utilizadores (admin)
-async getAllUsers(req, res, next) {
-  try {
-    const users = await User.find();
-    res.status(200).json({
-      status: "success",
-      results: users.length,
-      data: { users }
-    });
-  } catch (err) {
-    next(err);
+  async getAllUsers(req, res, next) {
+    try {
+      const users = await User.find();
+      res.status(200).json({
+        status: "sucesso",
+        results: users.length,
+        data: { users },
+      });
+    } catch (err) {
+      next(err);
+    }
   }
-}
 
   // Obter utilizador por ID (admin)
   async getUserById(req, res, next) {
     try {
       const user = await User.findById(req.params.id);
-      if (!user) return next(new AppError("not found", 404));
+      if (!user) return next(new AppError("Utilizador não encontrado", 404));
       res.status(200).json(user);
     } catch (err) {
       next(err);
@@ -187,7 +187,7 @@ async getAllUsers(req, res, next) {
       const user = await User.findByIdAndUpdate(req.params.id, req.body, {
         new: true,
       });
-      if (!user) return next(new AppError("not found", 404));
+      if (!user) return next(new AppError("Utilizador não encontrado", 404));
       res.status(200).json(user);
     } catch (err) {
       next(err);
@@ -198,8 +198,8 @@ async getAllUsers(req, res, next) {
   async deleteUserById(req, res, next) {
     try {
       const user = await User.findByIdAndDelete(req.params.id);
-      if (!user) return next(new AppError("User not found", 404));
-      res.status(200).json({ message: "User deleted with success." });
+      if (!user) return next(new AppError("Utilizador não encontrado", 404));
+      res.status(200).json({ message: "Utilizador eliminado com sucesso." });
     } catch (err) {
       next(err);
     }
@@ -210,7 +210,7 @@ async getAllUsers(req, res, next) {
     try {
       const { configs } = req.user;
       if (!configs || configs.length === 0) {
-        return res.status(204).json({ message: "no data" });
+        return res.status(204).json({ message: "sem dados" });
       }
       res.status(200).json({ configs });
     } catch (err) {
@@ -222,7 +222,7 @@ async getAllUsers(req, res, next) {
   async updateConfigs(req, res, next) {
     try {
       const user = await User.findById(req.user._id);
-      if (!user) return next(new AppError("User not found", 404));
+      if (!user) return next(new AppError("Utilizador não encontrado", 404));
       user.configs = req.body.configs;
       await user.save();
       res.status(200).json(user.configs);
