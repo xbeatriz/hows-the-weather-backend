@@ -3,7 +3,6 @@ import AppError from "../utils/errorHandler.js";
 import mongoose from "mongoose";
 
 class CommunityController {
-
   async createCommunity(req, res, next) {
     try {
       const { location, members_count } = req.body;
@@ -17,7 +16,7 @@ class CommunityController {
       });
 
       res.status(201).json({
-        message: "POST DONE, WAITING FOR APROVING.",
+        message: "POST FEITO, A AGUARDAR APROVAÇÃO.",
         data: newCommunity,
       });
     } catch (error) {
@@ -29,12 +28,12 @@ class CommunityController {
     try {
       const communities = await Community.find();
       res.status(200).json({
-        message: "List with communities running: OK",
+        message: "Lista de comunidades a correr: OK",
         results: communities.length,
         data: { communities },
       });
     } catch (error) {
-      console.error('Erro em getAllCommunities:', error);
+      console.error("Erro em getAllCommunities:", error);
       next(error);
     }
   }
@@ -44,11 +43,11 @@ class CommunityController {
     try {
       const { id } = req.params;
       if (!mongoose.Types.ObjectId.isValid(id)) {
-        return next(new AppError("Invalid", 400));
+        return next(new AppError("Invalido", 400));
       }
       const community = await Community.findById(id);
       if (!community) {
-        return next(new AppError("Value not found", 404));
+        return next(new AppError("Valor não encontrado", 404));
       }
 
       const approvedPosts = community.community_posts.filter(
@@ -56,7 +55,7 @@ class CommunityController {
       );
 
       res.status(200).json({
-        message: "List of posts is running",
+        message: "Lista de posts a correr",
         data: approvedPosts,
       });
     } catch (error) {
@@ -68,16 +67,16 @@ class CommunityController {
     try {
       const { id } = req.params;
       if (!mongoose.Types.ObjectId.isValid(id)) {
-        return next(new AppError("Invalid", 400));
+        return next(new AppError("Invalido", 400));
       }
 
       const community = await Community.findById(id);
       if (!community) {
-        return next(new AppError("Value not found", 404));
+        return next(new AppError("Valor não encontrado", 404));
       }
 
       res.status(200).json({
-        message: "Community: OK",
+        message: "Comunidade: OK",
         data: community,
       });
     } catch (error) {
@@ -89,7 +88,7 @@ class CommunityController {
     try {
       const { id } = req.params;
       if (!mongoose.Types.ObjectId.isValid(id)) {
-        return next(new AppError("Invalid", 400));
+        return next(new AppError("Invalido", 400));
       }
 
       const updatedCommunity = await Community.findByIdAndUpdate(id, req.body, {
@@ -97,11 +96,11 @@ class CommunityController {
         runValidators: true,
       });
       if (!updatedCommunity) {
-        return next(new AppError("Value not found", 404));
+        return next(new AppError("Valor não encontrado", 404));
       }
 
       res.status(200).json({
-        message: "Community updated",
+        message: "Comunidade atualizada",
         data: updatedCommunity,
       });
     } catch (error) {
@@ -113,14 +112,14 @@ class CommunityController {
     try {
       const { id } = req.params;
       if (!mongoose.Types.ObjectId.isValid(id)) {
-        return next(new AppError("Invalid", 400));
+        return next(new AppError("Invalido", 400));
       }
       const deletedCommunity = await Community.findByIdAndDelete(id);
       if (!deletedCommunity) {
-        return next(new AppError("Value not found", 404));
+        return next(new AppError("Valor não encontrado", 404));
       }
       res.status(200).json({
-        message: "Community deleted with success",
+        message: "Comunidade eliminada com sucesso",
       });
     } catch (error) {
       next(error);
@@ -142,28 +141,28 @@ class CommunityController {
       } = req.body;
 
       if (!mongoose.Types.ObjectId.isValid(id)) {
-        return next(new AppError("Invalid community ID", 400));
+        return next(new AppError("ID de comunidade inválido", 400));
       }
 
       if (!post_id || !mongoose.Types.ObjectId.isValid(post_id)) {
-        return next(new AppError("Invalid or missing post_id", 400));
+        return next(new AppError("post_id inválido ou em falta", 400));
       }
 
       if (!user_id || !mongoose.Types.ObjectId.isValid(user_id)) {
-        return next(new AppError("Invalid or missing user_id", 400));
+        return next(new AppError("user_id inválido ou em falta", 400));
       }
 
       if (!description) {
-        return next(new AppError("Description is required", 400));
+        return next(new AppError("Descrição é obrigatória", 400));
       }
 
       if (!timestamp) {
-        return next(new AppError("Timestamp is required", 400));
+        return next(new AppError("Timestamp é obrigatório", 400));
       }
 
       const community = await Community.findById(id);
       if (!community) {
-        return next(new AppError("Community not found", 404));
+        return next(new AppError("Comunidade não encontrada", 404));
       }
 
       // 🚫 Força o status para "waiting" sempre
@@ -197,17 +196,25 @@ class CommunityController {
     try {
       const { community_id, post_id } = req.params;
 
-      if (!mongoose.Types.ObjectId.isValid(community_id) || !mongoose.Types.ObjectId.isValid(post_id)) {
+      if (
+        !mongoose.Types.ObjectId.isValid(community_id) ||
+        !mongoose.Types.ObjectId.isValid(post_id)
+      ) {
         return next(new AppError("Invalid ID(s)", 400));
       }
 
       if (req.user.role !== "admin") {
-        return next(new AppError("Unauthorized. Only admins can approve posts.", 403));
+        return next(
+          new AppError(
+            "Não autorizado. Apenas administradores podem aprovar posts.",
+            403
+          )
+        );
       }
 
       const community = await Community.findById(community_id);
       if (!community) {
-        return next(new AppError("Community not found", 404));
+        return next(new AppError("Comunidade não encontrada", 404));
       }
 
       const post = community.community_posts.find(
@@ -215,7 +222,7 @@ class CommunityController {
       );
 
       if (!post) {
-        return next(new AppError("Post not found", 404));
+        return next(new AppError("Post não encontrado", 404));
       }
 
       post.status = "approved";
@@ -230,7 +237,6 @@ class CommunityController {
     }
   }
 
-
   // DELETE /communities/:id/posts/:post_id - deletar post (normal user ou admin)
   async deleteCommunityPost(req, res, next) {
     try {
@@ -239,12 +245,12 @@ class CommunityController {
         !mongoose.Types.ObjectId.isValid(id) ||
         !mongoose.Types.ObjectId.isValid(post_id)
       ) {
-        return next(new AppError("Invalid ID(s)", 400));
+        return next(new AppError("ID(s) inválido(s)", 400));
       }
 
       const community = await Community.findById(id);
       if (!community) {
-        return next(new AppError("Value not found", 404));
+        return next(new AppError("Comunidade não encontrada", 404));
       }
 
       const postIndex = community.community_posts.findIndex(
@@ -252,7 +258,7 @@ class CommunityController {
       );
 
       if (postIndex === -1) {
-        return next(new AppError("Post not found", 404));
+        return next(new AppError("Post não encontrado", 404));
       }
 
       // TODO: verificar se o user tem permissão para deletar o post
@@ -262,7 +268,7 @@ class CommunityController {
       await community.save();
 
       res.status(200).json({
-        message: "Post deleted with success",
+        message: "Post eliminado com sucesso",
       });
     } catch (error) {
       next(error);
