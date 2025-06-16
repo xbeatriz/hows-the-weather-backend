@@ -35,7 +35,7 @@
                 {{ sensor.status }}
               </span>
             </td>
-            <td>{{ sensor.lastUpdated ? new Date(sensor.lastUpdated).toLocaleString() : 'N/A' }}</td>
+            <td>{{ sensor.last_reading.timestamp ? new Date(sensor.last_reading.timestamp).toLocaleString() : 'N/A' }}</td>
             <td>
               <div class="action-buttons">
                 <button class="view-btn" title="View Data" @click="selectSensor(sensor._id)">

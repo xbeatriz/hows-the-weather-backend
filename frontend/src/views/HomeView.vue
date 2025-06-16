@@ -1,65 +1,36 @@
 <template>
   <div class="home">
     <!-- Sidebar Component - adjust props and events to match the actual component -->
-     <Sidebar 
-    :headerText="'My Custom Dashboard'"
-  :user="{
-    name: 'John Smith',
-    role: 'Administrator',
-    avatar: '/path/to/avatar.jpg'
-  }"
-  :activeMenu="currentMenu"
-  :menuItems="[
-    { id: 'overview', name: 'My Dashboard', icon: ['fas', 'tachometer-alt'] },
-    { id: 'users', name: 'Team Members', icon: ['fas', 'users'] },
-    { id: 'sensors', name: 'Equipment', icon: ['fas', 'microchip'] },
-    { id: 'communities', name: 'Locations', icon: ['fas', 'city'] }
-  ]"
-  @menuChange="handleMenuChange"
-  @logout="handleLogout"
-/>
-    
+    <Sidebar :headerText="'Painel de Controlo'" :user="user" :activeMenu="activeMenu" @menuChange="handleMenuChange"
+      @logout="handleLogout" />
+
     <!-- Dashboard Content -->
     <div class="dashboard-content">
       <div class="welcome-section">
-        <h1>Welcome back, User!</h1>
+        <h1>Welcome back, {{ user.name }}!</h1>
         <p>Here's your weather report for today</p>
       </div>
-      
+
       <!-- Weather Card Grid -->
       <div class="weather-card-grid">
         <!-- Current Weather Card -->
-        <CurrentWeatherCard 
-          :weather="currentWeather"
-          :currentDate="currentDate"
-        />
-        
+        <CurrentWeatherCard :weather="currentWeather" :currentDate="currentDate" />
+
         <!-- Forecast Card -->
-        <ForecastCard
-          :dailyTemperature="dailyTemperature"
-          :weeklyTemperature="weeklyTemperature"
-        />
+        <ForecastCard :dailyTemperature="dailyTemperature" :weeklyTemperature="weeklyTemperature" />
       </div>
-      
+
       <!-- Metrics Cards -->
       <div class="metrics-card-grid">
         <!-- Humidity Card -->
         <HumidityCard :humidity="currentWeather.humidity" />
-        
+
         <!-- Air Quality Card -->
-        <AirQualityCard 
-          :airQuality="airQuality"
-          :airPollutants="airPollutants"
-        />
+        <AirQualityCard :airQuality="airQuality" :airPollutants="airPollutants" />
       </div>
-      
+
       <!-- Additional Weather Data -->
-      <AdditionalDataCard
-        :data="additionalData"
-        :selectedDate="selectedDate"
-        @prev-day="prevDay"
-        @next-day="nextDay"
-      />
+      <AdditionalDataCard :data="additionalData" :selectedDate="selectedDate" @prev-day="prevDay" @next-day="nextDay" />
     </div>
   </div>
 </template>
@@ -72,6 +43,8 @@ import ForecastCard from '@/components/weather/ForecastCard.vue';
 import HumidityCard from '@/components/weather/HumidityCard.vue';
 import AirQualityCard from '@/components/weather/AirQualityCard.vue';
 import AdditionalDataCard from '@/components/weather/AdditionalDataCard.vue';
+import { useUserStore } from '@/stores/userStore';
+import{computed} from 'vue';
 
 export default {
   name: 'HomeView',
@@ -138,14 +111,22 @@ export default {
       }
     }
   },
+  setup() {
+    const userStore = useUserStore();
+    const user = computed(() => userStore.user);
+    return { user };
+  },
   methods: {
+    handleMenuChange(menuId) {
+      this.activeMenu = menuId;
+    },
     toggleSidebar() {
       this.sidebarOpen = !this.sidebarOpen;
       document.body.style.overflow = this.sidebarOpen ? 'hidden' : 'auto';
     },
-    logout() {
-      console.log('User logged out');
-      // this.$router.push('/login');
+    handleLogout() {
+      useUserStore().logout();
+      this.$router.push("/login");
     },
     prevDay() {
       // Just a placeholder in the demo
@@ -166,7 +147,8 @@ export default {
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   width: 100%;
   height: 100%;
 }
@@ -232,28 +214,36 @@ html, body {
 
 /* Responsive Adjustments */
 @media (min-width: 2000px) {
-  .weather-card-grid, .metrics-card-grid {
+
+  .weather-card-grid,
+  .metrics-card-grid {
     margin: 0 5% 20px;
     width: calc(100% - 10%);
   }
 }
 
 @media (min-width: 1440px) and (max-width: 1999px) {
-  .weather-card-grid, .metrics-card-grid {
+
+  .weather-card-grid,
+  .metrics-card-grid {
     margin: 0 4% 20px;
     width: calc(100% - 8%);
   }
 }
 
 @media (min-width: 1025px) and (max-width: 1439px) {
-  .weather-card-grid, .metrics-card-grid {
+
+  .weather-card-grid,
+  .metrics-card-grid {
     margin: 0 3% 20px;
     width: calc(100% - 6%);
   }
 }
 
 @media (max-width: 1024px) {
-  .weather-card-grid, .metrics-card-grid {
+
+  .weather-card-grid,
+  .metrics-card-grid {
     flex-direction: column;
     margin: 0 20px 20px;
     width: calc(100% - 40px);

@@ -103,13 +103,12 @@ export default {
         });
 
         const result = await response.json();
+
         if (!response.ok) {
           throw new Error(result.message || 'Login failed');
         }
 
-
         userStore.setUserData(result.data.user, result.accessToken, result.refreshToken);
-
 
         if (this.rememberMe) {
           localStorage.setItem('accesstoken', userStore.accessToken);
@@ -117,18 +116,21 @@ export default {
           localStorage.setItem('user', JSON.stringify(userStore.user));
         }
 
-        this.$router.push('/dashboard');
-
+        if (userStore.user.role === 'admin') {
+          this.$router.push('/dashboard');
+        } else if (userStore.user.role === 'user') {
+          this.$router.push('/home');
+        }
       } catch (error) {
         console.error('Login failed:', error.message);
         this.errors.email = '';
         this.errors.password = error.message || 'Invalid email or password';
-      }
-      finally {
+      } finally {
         this.isLoading = false;
       }
-    }
 
+
+    }
   }
 }
 </script>
