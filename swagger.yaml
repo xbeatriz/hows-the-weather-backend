@@ -9,6 +9,8 @@ servers:
 paths:
   /user/register:
     post:
+      tags:
+        - Users
       summary: Registar novo utilizador
       requestBody:
         required: true
@@ -24,6 +26,8 @@ paths:
 
   /user/login:
     post:
+      tags:
+        - Users
       summary: Login de utilizador
       requestBody:
         required: true
@@ -53,6 +57,8 @@ paths:
 
   /user/verify-email/{token}:
     get:
+      tags:
+        - Users
       summary: Verificar email via token
       parameters:
         - in: path
@@ -84,6 +90,8 @@ paths:
 
   /user/refresh-token:
     post:
+      tags:
+        - Users
       summary: Gerar novo access token com refresh token
       requestBody:
         required: true
@@ -111,6 +119,8 @@ paths:
 
   /user/me:
     get:
+      tags:
+        - Users
       summary: Obter dados do utilizador autenticado
       security:
         - bearerAuth: []
@@ -122,6 +132,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/User"
     patch:
+      tags:
+        - Users
       summary: Atualizar dados do utilizador autenticado
       security:
         - bearerAuth: []
@@ -135,6 +147,8 @@ paths:
         "200":
           description: Utilizador atualizado com sucesso
     delete:
+      tags:
+        - Users
       summary: Eliminar conta do utilizador autenticado
       security:
         - bearerAuth: []
@@ -144,6 +158,8 @@ paths:
 
   /user:
     get:
+      tags:
+        - Users
       summary: Obter todos os utilizadores (admin)
       security:
         - bearerAuth: []
@@ -169,6 +185,8 @@ paths:
 
   /user/{id}:
     get:
+      tags:
+        - Users
       summary: Obter um utilizador por ID (admin)
       security:
         - bearerAuth: []
@@ -182,6 +200,8 @@ paths:
         "200":
           description: Utilizador encontrado
     patch:
+      tags:
+        - Users
       summary: Atualizar utilizador por ID (admin)
       security:
         - bearerAuth: []
@@ -201,6 +221,8 @@ paths:
         "200":
           description: Utilizador atualizado
     delete:
+      tags:
+        - Users
       summary: Apagar utilizador por ID (admin)
       security:
         - bearerAuth: []
@@ -216,6 +238,8 @@ paths:
 
   /sensors:
     post:
+      tags:
+        - Sensors
       summary: Criar novo sensor
       requestBody:
         required: true
@@ -227,6 +251,8 @@ paths:
         "201":
           description: Sensor criado
     get:
+      tags:
+        - Sensors
       summary: Obter todos os sensores
       responses:
         "200":
@@ -234,6 +260,8 @@ paths:
 
   /sensors/{id}:
     get:
+      tags:
+        - Sensors
       summary: Obter sensor por ID
       parameters:
         - in: path
@@ -245,6 +273,8 @@ paths:
         "200":
           description: Dados do sensor
     patch:
+      tags:
+        - Sensors
       summary: Atualizar sensor por ID
       parameters:
         - in: path
@@ -262,6 +292,8 @@ paths:
         "200":
           description: Sensor atualizado
     delete:
+      tags:
+        - Sensors
       summary: Eliminar sensor por ID
       parameters:
         - in: path
@@ -275,6 +307,8 @@ paths:
 
   /communities:
     post:
+      tags:
+        - Communities
       summary: Criar nova comunidade
       requestBody:
         required: true
@@ -286,6 +320,8 @@ paths:
         "201":
           description: Comunidade criada
     get:
+      tags:
+        - Communities
       summary: Obter todas as comunidades
       responses:
         "200":
@@ -293,6 +329,8 @@ paths:
 
   /communities/{id}:
     get:
+      tags:
+        - Communities
       summary: Obter comunidade por ID
       parameters:
         - in: path
@@ -304,6 +342,8 @@ paths:
         "200":
           description: Detalhes da comunidade
     patch:
+      tags:
+        - Communities
       summary: Atualizar comunidade por ID
       parameters:
         - in: path
@@ -321,6 +361,8 @@ paths:
         "200":
           description: Comunidade atualizada
     delete:
+      tags:
+        - Communities
       summary: Eliminar comunidade por ID
       parameters:
         - in: path
@@ -334,6 +376,8 @@ paths:
 
   /communities/{id}/posts:
     get:
+      tags:
+        - Communities
       summary: Listar posts aprovados de uma comunidade
       parameters:
         - in: path
@@ -345,6 +389,8 @@ paths:
         "200":
           description: Lista de posts aprovados
     post:
+      tags:
+        - Communities
       summary: Submeter post para aprovação
       parameters:
         - in: path
@@ -364,6 +410,8 @@ paths:
 
   /communities/{community_id}/posts/{post_id}/approve:
     patch:
+      tags:
+        - Communities
       summary: Aprovar post (apenas admin)
       security:
         - bearerAuth: []
@@ -384,6 +432,8 @@ paths:
 
   /communities/{id}/posts/{post_id}:
     delete:
+      tags:
+        - Communities
       summary: Eliminar post (utilizador ou admin)
       security:
         - bearerAuth: []
