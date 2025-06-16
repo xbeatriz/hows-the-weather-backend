@@ -1,53 +1,59 @@
-openapi: 3.0.0
+openapi: 3.0.3
 info:
-  title: "API Completa - User, Sensor, Notifications, Community"
+  title: API de Utilizadores, Sensores e Comunidades
   version: 1.0.0
-  description: >-
-    Gestão de utilizadores, sensores, notificações e comunidades, com
-    autenticação JWT.
+  description: API para registo/login de utilizadores, gestão de sensores e comunidades.
 servers:
-  - url: "http://localhost:3000/api"
-    description: Servidor local
-security:
-  - bearerAuth: []
+  - url: http://localhost:3000/api/
+
 paths:
   /user/register:
     post:
       summary: Registar novo utilizador
-      tags:
-        - User
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UserRegister"
+              $ref: "#/components/schemas/RegisterUser"
       responses:
         "201":
-          description: Conta criada
+          description: Conta criada com sucesso, email de verificação enviado
         "400":
           description: Email já em uso
+
   /user/login:
     post:
-      summary: Login
-      tags:
-        - User
+      summary: Login de utilizador
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UserLogin"
+              $ref: "#/components/schemas/LoginUser"
       responses:
         "200":
-          description: Login bem sucedido
+          description: Login efetuado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                  refreshToken:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: "#/components/schemas/User"
         "401":
-          description: Email ou senha incorretos
-  "/user/verify-email/{token}":
+          description: Credenciais inválidas ou email não verificado
+
+  /user/verify-email/{token}:
     get:
-      summary: Verificar email
-      tags:
-        - User
+      summary: Verificar email via token
       parameters:
         - in: path
           name: token
@@ -57,71 +63,115 @@ paths:
       responses:
         "200":
           description: Email verificado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  token:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: "#/components/schemas/User"
         "400":
           description: Token inválido ou expirado
+        "404":
+          description: Utilizador não encontrado
+
   /user/refresh-token:
     post:
-      summary: Renovar access token
-      tags:
-        - User
+      summary: Gerar novo access token com refresh token
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
-              required:
-                - refreshToken
               properties:
                 refreshToken:
                   type: string
       responses:
         "200":
-          description: Novo token JWT
+          description: Token renovado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        "400":
+          description: Refresh token não fornecido
+        "401":
+          description: Refresh token inválido ou expirado
+
   /user/me:
     get:
       summary: Obter dados do utilizador autenticado
-      tags:
-        - User
       security:
         - bearerAuth: []
       responses:
         "200":
-          description: Dados do utilizador
+          description: Dados do utilizador autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
     patch:
       summary: Atualizar dados do utilizador autenticado
-      tags:
-        - User
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              additionalProperties: true
+              $ref: "#/components/schemas/UserUpdate"
       responses:
         "200":
-          description: Dados atualizados
+          description: Utilizador atualizado com sucesso
     delete:
-      summary: Apagar conta própria
-      tags:
-        - User
+      summary: Eliminar conta do utilizador autenticado
+      security:
+        - bearerAuth: []
       responses:
         "200":
-          description: Conta apagada
+          description: Conta eliminada com sucesso
+
   /user:
     get:
       summary: Obter todos os utilizadores (admin)
-      tags:
-        - User
+      security:
+        - bearerAuth: []
       responses:
         "200":
           description: Lista de utilizadores
-  "/user/{id}":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  results:
+                    type: integer
+                  data:
+                    type: object
+                    properties:
+                      users:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/User"
+
+  /user/{id}:
     get:
-      summary: Obter utilizador por ID
-      tags:
-        - User
+      summary: Obter um utilizador por ID (admin)
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: id
@@ -131,12 +181,10 @@ paths:
       responses:
         "200":
           description: Utilizador encontrado
-        "404":
-          description: Utilizador não encontrado
     patch:
-      summary: Atualizar utilizador por ID
-      tags:
-        - User
+      summary: Atualizar utilizador por ID (admin)
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: id
@@ -148,17 +196,14 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              additionalProperties: true
+              $ref: "#/components/schemas/UserUpdate"
       responses:
         "200":
           description: Utilizador atualizado
-        "404":
-          description: Utilizador não encontrado
     delete:
-      summary: Apagar utilizador por ID
-      tags:
-        - User
+      summary: Apagar utilizador por ID (admin)
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: id
@@ -168,66 +213,28 @@ paths:
       responses:
         "200":
           description: Utilizador apagado
-        "404":
-          description: Utilizador não encontrado
-  /user/me/configs:
-    get:
-      summary: Obter configurações do utilizador
-      tags:
-        - User
-      responses:
-        "200":
-          description: Configurações
-        "204":
-          description: Sem configurações
-    put:
-      summary: Atualizar configurações
-      tags:
-        - User
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - configs
-              properties:
-                configs:
-                  type: array
-                  items:
-                    $ref: "#/components/schemas/UserConfig"
-      responses:
-        "200":
-          description: Configurações atualizadas
+
   /sensors:
     post:
-      summary: Criar sensor
-      tags:
-        - Sensor
+      summary: Criar novo sensor
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/SensorInput"
+              $ref: "#/components/schemas.CreateSensor"
       responses:
         "201":
           description: Sensor criado
-        "400":
-          description: Campos obrigatórios em falta
     get:
-      summary: Listar sensores
-      tags:
-        - Sensor
+      summary: Obter todos os sensores
       responses:
         "200":
           description: Lista de sensores
-  "/sensors/{id}":
+
+  /sensors/{id}:
     get:
       summary: Obter sensor por ID
-      tags:
-        - Sensor
       parameters:
         - in: path
           name: id
@@ -236,13 +243,9 @@ paths:
             type: string
       responses:
         "200":
-          description: Sensor encontrado
-        "404":
-          description: Sensor não encontrado
+          description: Dados do sensor
     patch:
       summary: Atualizar sensor por ID
-      tags:
-        - Sensor
       parameters:
         - in: path
           name: id
@@ -254,16 +257,12 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/SensorUpdate"
+              $ref: "#/components/schemas.UpdateSensor"
       responses:
         "200":
           description: Sensor atualizado
-        "404":
-          description: Sensor não encontrado
     delete:
-      summary: Apagar sensor por ID
-      tags:
-        - Sensor
+      summary: Eliminar sensor por ID
       parameters:
         - in: path
           name: id
@@ -272,35 +271,29 @@ paths:
             type: string
       responses:
         "200":
-          description: Sensor deletado
-        "404":
-          description: Sensor não encontrado
+          description: Sensor apagado
+
   /communities:
     post:
-      summary: Criar comunidade
-      tags:
-        - Community
+      summary: Criar nova comunidade
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CommunityInput"
+              $ref: "#/components/schemas.CreateCommunity"
       responses:
         "201":
           description: Comunidade criada
     get:
-      summary: Listar comunidades
-      tags:
-        - Community
+      summary: Obter todas as comunidades
       responses:
         "200":
           description: Lista de comunidades
-  "/communities/{id}":
+
+  /communities/{id}:
     get:
       summary: Obter comunidade por ID
-      tags:
-        - Community
       parameters:
         - in: path
           name: id
@@ -309,15 +302,9 @@ paths:
             type: string
       responses:
         "200":
-          description: Comunidade encontrada
-        "400":
-          description: ID inválido
-        "404":
-          description: Comunidade não encontrada
+          description: Detalhes da comunidade
     patch:
       summary: Atualizar comunidade por ID
-      tags:
-        - Community
       parameters:
         - in: path
           name: id
@@ -329,18 +316,12 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CommunityInput"
+              $ref: "#/components/schemas.UpdateCommunity"
       responses:
         "200":
           description: Comunidade atualizada
-        "400":
-          description: ID inválido
-        "404":
-          description: Comunidade não encontrada
     delete:
-      summary: Apagar comunidade por ID
-      tags:
-        - Community
+      summary: Eliminar comunidade por ID
       parameters:
         - in: path
           name: id
@@ -350,15 +331,10 @@ paths:
       responses:
         "200":
           description: Comunidade apagada
-        "400":
-          description: ID inválido
-        "404":
-          description: Comunidade não encontrada
-  "/communities/{id}/posts":
+
+  /communities/{id}/posts:
     get:
       summary: Listar posts aprovados de uma comunidade
-      tags:
-        - Community
       parameters:
         - in: path
           name: id
@@ -367,15 +343,9 @@ paths:
             type: string
       responses:
         "200":
-          description: Posts encontrados
-        "400":
-          description: ID inválido
-        "404":
-          description: Comunidade não encontrada
+          description: Lista de posts aprovados
     post:
-      summary: Criar post em comunidade
-      tags:
-        - Community
+      summary: Submeter post para aprovação
       parameters:
         - in: path
           name: id
@@ -387,19 +357,36 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CommunityPostInput"
+              $ref: "#/components/schemas.SubmitPost"
       responses:
         "201":
-          description: Post criado (aguardando aprovação)
-        "400":
-          description: Campos inválidos
-        "404":
-          description: Comunidade não encontrada
-  "/communities/{id}/posts/{post_id}":
+          description: Post submetido
+
+  /communities/{community_id}/posts/{post_id}/approve:
+    patch:
+      summary: Aprovar post (apenas admin)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: community_id
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: post_id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Post aprovado
+
+  /communities/{id}/posts/{post_id}:
     delete:
-      summary: Apagar post
-      tags:
-        - Community
+      summary: Eliminar post (utilizador ou admin)
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: id
@@ -413,161 +400,119 @@ paths:
             type: string
       responses:
         "200":
-          description: Post deletado
-        "400":
-          description: ID inválido
-        "404":
-          description: Post ou comunidade não encontrado
+          description: Post eliminado
+
 components:
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
   schemas:
-    UserRegister:
+    RegisterUser:
       type: object
-      required:
-        - name
-        - email
-        - password
+      required: [name, email, password]
       properties:
-        name:
-          type: string
-        email:
-          type: string
-        password:
-          type: string
-    UserLogin:
+        name: { type: string }
+        email: { type: string, format: email }
+        password: { type: string, format: password }
+    LoginUser:
       type: object
-      required:
-        - email
-        - password
+      required: [email, password]
       properties:
-        email:
-          type: string
-        password:
-          type: string
+        email: { type: string, format: email }
+        password: { type: string, format: password }
+    User:
+      type: object
+      properties:
+        _id: { type: string }
+        name: { type: string }
+        email: { type: string }
+        isVerified: { type: boolean }
+        role: { type: string }
+        configs:
+          type: array
+          items:
+            $ref: "#/components/schemas.UserConfig"
+    UserUpdate:
+      type: object
+      properties:
+        name: { type: string }
+        email: { type: string, format: email }
     UserConfig:
       type: object
       properties:
-        location:
-          type: string
+        location: { type: string }
         notification_type:
           type: string
-          enum:
-            - email
-            - app
+          enum: ["email", "app"]
         alert_thresholds:
           type: object
           properties:
             temperature:
               type: object
               properties:
-                min:
-                  type: number
-                max:
-                  type: number
+                min: { type: number }
+                max: { type: number }
             humidity:
               type: object
               properties:
-                min:
-                  type: number
-                max:
-                  type: number
+                min: { type: number }
+                max: { type: number }
             gas:
               type: object
               properties:
-                min:
-                  type: number
-                max:
-                  type: number
-    SensorInput:
+                min: { type: number }
+                max: { type: number }
+    CreateSensor:
       type: object
-      required:
-        - type
-        - location
-        - status
-        - update_frequency
+      required: [type, location, status, update_frequency]
       properties:
-        type:
-          type: string
-          example: temperatura
-        location:
-          type: string
-          example: Sala
-        status:
-          type: string
-          example: ativo
-        update_frequency:
-          type: integer
-          description: frequência em segundos
+        type: { type: string }
+        location: { type: string }
+        status: { type: string }
+        update_frequency: { type: integer }
+    UpdateSensor:
+      type: object
+      properties:
+        type: { type: string }
+        location: { type: string }
+        status: { type: string }
+        update_frequency: { type: integer }
         last_reading:
-          type: string
-          format: date-time
+          type: object
+          description: Última leitura do sensor
         readings:
           type: array
           items:
             type: object
-    SensorUpdate:
+    CreateCommunity:
+      type: object
+      required: [location]
+      properties:
+        location: { type: string }
+        members_count: { type: integer }
+    UpdateCommunity:
       type: object
       properties:
-        type:
-          type: string
-        location:
-          type: string
-        status:
-          type: string
-        update_frequency:
-          type: integer
-        last_reading:
-          type: string
-          format: date-time
-        readings:
+        location: { type: string }
+        members_count: { type: integer }
+        community_posts:
           type: array
-          items:
-            type: object
-    CommunityInput:
+          items: { type: object }
+    SubmitPost:
       type: object
-      required:
-        - location
+      required: [post_id, user_id, description, timestamp]
       properties:
-        location:
-          type: string
-        members_count:
-          type: integer
-          default: 0
-    CommunityPostInput:
-      type: object
-      required:
-        - post_id
-        - user_id
-        - description
-        - timestamp
-        - status
-      properties:
-        post_id:
-          type: string
-        user_id:
-          type: string
-        sensor_id:
-          type: string
-        description:
-          type: string
+        post_id: { type: string }
+        user_id: { type: string }
+        sensor_id: { type: string }
+        description: { type: string }
         media:
           type: array
-          items:
-            type: string
-        timestamp:
-          type: string
-          format: date-time
+          items: { type: string }
+        timestamp: { type: string, format: date-time }
         tags:
           type: array
-          items:
-            type: string
-        status:
-          type: string
-          enum:
-            - waiting
-            - approved
-            - rejected
+          items: { type: string }
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
