@@ -475,40 +475,36 @@ components:
         email: { type: string }
         isVerified: { type: boolean }
         role: { type: string }
-        configs:
-          type: array
-          items:
-            $ref: "#/components/schemas.UserConfig"
+    configs:
+      type: array
+      items:
+      $ref: "#/components/schemas/UserConfig"
+
     UserUpdate:
       type: object
       properties:
         name: { type: string }
         email: { type: string, format: email }
+
     UserConfig:
       type: object
       properties:
-        location: { type: string }
-        notification_type:
-          type: string
-          enum: ["email", "app"]
-        alert_thresholds:
+        temperature:
           type: object
           properties:
-            temperature:
-              type: object
-              properties:
-                min: { type: number }
-                max: { type: number }
-            humidity:
-              type: object
-              properties:
-                min: { type: number }
-                max: { type: number }
-            gas:
-              type: object
-              properties:
-                min: { type: number }
-                max: { type: number }
+            min: { type: number }
+            max: { type: number }
+        humidity:
+          type: object
+          properties:
+            min: { type: number }
+            max: { type: number }
+        gas:
+          type: object
+          properties:
+            min: { type: number }
+            max: { type: number }
+
     CreateSensor:
       type: object
       required: [type, location, status, update_frequency]
