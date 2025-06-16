@@ -11,7 +11,7 @@ export async function processUserNotifications(user) {
   if (!sensors.length) return;
 
   // 2. Buscar últimas leituras dos sensores (exemplo genérico)
-  const sensorReadings = sensors.map(sensor => sensor.lastReading); // Ajustar conforme modelo
+  const sensorReadings = sensors.map(sensor => sensor.last_reading); // Ajustar conforme modelo
 
   // 3. Para cada config do user, verificar alertas e enviar notificações
   for (const config of user.configs || []) {
@@ -27,7 +27,7 @@ export async function processUserNotifications(user) {
     let alertMessages = [];
 
     filteredSensors.forEach(sensor => {
-      const reading = sensor.lastReading; // supor que existe este campo com dados {temperature, humidity, gas}
+      const reading = sensor.last_reading; // supor que existe este campo com dados {temperature, humidity, gas}
 
       if (!reading) return;
 
