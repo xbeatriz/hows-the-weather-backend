@@ -1,8 +1,8 @@
 openapi: 3.0.3
 info:
-  title: API de Utilizadores, Sensores e Comunidades
+  title: API - Saúde Pública e bem estar - monotirzar a qualidade do ar
   version: 1.0.0
-  description: API para registo/login de utilizadores, gestão de sensores e comunidades.
+  description: API para o projeto de 2º ano de PWII. RESTful API to receive and manage sensor data (temperature, humidity, gas). User authentication system with two predefined roles - admin, user. Alerts system for abnormal sensor values. Integration with a database containing the full structure and contextual data.
 servers:
   - url: http://localhost:3000/api/
 
