@@ -20,9 +20,12 @@ const protect = async (req, res, next) => {
         decoded = jwt.verifyAuthToken(token);
       } catch (err) {
         // Se o accessToken falhar, tenta o refreshToken
-        const refreshToken = req.headers['x-refresh-token'] || req.body.refreshToken;
+        const refreshToken =
+          req.headers["x-refresh-token"] || req.body.refreshToken;
         if (!refreshToken) {
-          return next(new AppError("Token expirado. Faça login novamente.", 401));
+          return next(
+            new AppError("Token expirado. Faça login novamente.", 401)
+          );
         }
 
         try {
@@ -34,7 +37,9 @@ const protect = async (req, res, next) => {
 
           decoded = refreshDecoded;
         } catch (refreshErr) {
-          return next(new AppError("Sessão expirada. Faça login novamente.", 401));
+          return next(
+            new AppError("Sessão expirada. Faça login novamente.", 401)
+          );
         }
       }
     } else {
@@ -53,12 +58,11 @@ const protect = async (req, res, next) => {
   }
 };
 
-
 const checkRole = (requiredRole) => {
   return (req, res, next) => {
     if (!req.user || req.user.role !== requiredRole) {
       return next(
-        new AppError("You do not have permission to perform this action", 403)
+        new AppError("Tu não tens permissão para realizar esta ação", 403)
       );
     }
     next();
