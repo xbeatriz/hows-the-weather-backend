@@ -58,5 +58,4 @@ const user = JSON.parse(localStorage.getItem('user'))
 if (accessToken && refreshToken && user) {
   userStore.setUserData(user, accessToken, refreshToken)
 }
-
 app.mount('#app')
