@@ -4,12 +4,12 @@ import bcrypt from "bcryptjs";
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, "Please provide a name"],
+    required: [true, "Por favor, forneça um nome"],
     trim: true,
   },
   email: {
     type: String,
-    required: [true, "Please provide an email"],
+    required: [true, "Por favor, forneça um email"],
     unique: true,
     validate: {
       validator: (value) => {
@@ -17,13 +17,13 @@ const userSchema = new mongoose.Schema({
           /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
         return value.match(re);
       },
-      message: "Please enter a valid email address.",
+      message: "Por favor, insira um endereço de email válido.",
     },
   },
   password: {
     type: String,
-    required: [true, "Please provide a password"],
-    minlength: [8, "Password must be at least 8 characters"],
+    required: [true, "Por favor, forneça uma senha"],
+    minlength: [8, "A senha deve ter pelo menos 8 caracteres"],
     select: false, // nao incluir passwords nos pedidos
   },
   location: {
