@@ -16,7 +16,7 @@ class CommunityController {
       });
 
       res.status(201).json({
-        message: "POST FEITO, A AGUARDAR APROVAÇÃO.",
+        message: "Comunidade criada com sucesso",
         data: newCommunity,
       });
     } catch (error) {
@@ -165,7 +165,7 @@ class CommunityController {
         return next(new AppError("Comunidade não encontrada", 404));
       }
 
-      // 🚫 Força o status para "waiting" sempre
+      //Força o status para "waiting" sempre
       const finalStatus = "waiting";
 
       community.community_posts.push({
@@ -237,7 +237,7 @@ class CommunityController {
     }
   }
 
-  // DELETE /communities/:id/posts/:post_id - deletar post (normal user ou admin)
+  // DELETE /communities/:id/posts/:post_id - apagar post (normal user ou admin)
   async deleteCommunityPost(req, res, next) {
     try {
       const { id, post_id } = req.params;
@@ -261,7 +261,7 @@ class CommunityController {
         return next(new AppError("Post não encontrado", 404));
       }
 
-      // TODO: verificar se o user tem permissão para deletar o post
+      // TODO: verificar se o user tem permissão para apagar o post
       // Exemplo: só admin ou dono do post
 
       community.community_posts.splice(postIndex, 1);
