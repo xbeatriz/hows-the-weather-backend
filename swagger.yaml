@@ -246,7 +246,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas.CreateSensor"
+              $ref: "#/components/schemas/CreateSensor"
       responses:
         "201":
           description: Sensor criado
@@ -287,7 +287,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas.UpdateSensor"
+              $ref: "#/components/schemas/UpdateSensor"
       responses:
         "200":
           description: Sensor atualizado
@@ -315,7 +315,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas.CreateCommunity"
+              $ref: "#/components/schemas/CreateCommunity"
       responses:
         "201":
           description: Comunidade criada
@@ -356,7 +356,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas.UpdateCommunity"
+              $ref: "#/components/schemas/UpdateCommunity"
       responses:
         "200":
           description: Comunidade atualizada
@@ -403,7 +403,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas.SubmitPost"
+              $ref: "#/components/schemas/SubmitPost"
       responses:
         "201":
           description: Post submetido
