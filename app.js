@@ -34,7 +34,10 @@ app.get("/", (req, res) => {
   res.send("Hello Sensors API!");
 });
 
-// Error handling middleware
+// Error handling middleware (deve sempre vir em ultimo, isto é a ultima coisa a ser chamada)
+// a colocar deve ser mais detalhado
+// quando simples deve estar aqui
+// a tar fora deve ter o traatamento de varias respostas tipo templates para a resposta (400, 402.......)
 app.use(errorHandler);
 
 // Swagger setup

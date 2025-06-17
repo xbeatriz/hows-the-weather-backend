@@ -1,10 +1,10 @@
 ### Create Sensor
 POST http://localhost:3000/api/sensors
-Authorization: Bearer <your_jwt_token_here>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NGU5MTA3NDZmNGQwMGFmZjJhNTQ3MSIsImlhdCI6MTc1MDE3OTEzMCwiZXhwIjoxNzUwMTgwMDMwfQ.AcgjXZwhishiwXm8IId78CfnvLyGvlRFCEnt8yDBsLA
 Content-Type: application/json
 
 {
-  "type": "temperature",
+  "type": "BATATAS",
   "location": "Lisboa",
   "status": "active",
   "update_frequency": "hours"

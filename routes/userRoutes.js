@@ -8,11 +8,11 @@ const router = express.Router();
 router.post("/register", userController.register);
 router.post("/login", userController.login);
 
-// User 
+// User
 router.get("/me", protect, userController.getMe);
 router.patch("/me", protect, userController.updateMe);
 router.delete("/me", protect, userController.deleteMe);
-router.get('/verify-email/:token', userController.verifyEmail);
+router.get("/verify-email/:token", userController.verifyEmail);
 
 router.get("/me/configs", protect, userController.getConfigs);
 router.patch("/me/configs", protect, userController.updateConfigs);

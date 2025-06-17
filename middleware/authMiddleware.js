@@ -61,6 +61,8 @@ const protect = async (req, res, next) => {
 const checkRole = (requiredRole) => {
   return (req, res, next) => {
     if (!req.user || req.user.role !== requiredRole) {
+      // IMPORTANTE PARA O TESTE
+      //LINKS AWAIT US -
       return next(
         new AppError("Tu não tens permissão para realizar esta ação", 403)
       );
