@@ -6,9 +6,11 @@ import { addNotification } from "../utils/notificationsMemory.js";
 
 // Executa a cada minuto
 cron.schedule("* * * * *", async () => {
-  console.log("🔁 Cron job ativo: gerar readings, verificar sensores e enviar notificações...");
+  console.log(
+    "Cron job ativo: gerar readings, verificar sensores e enviar notificações..."
+  );
 
-  // 🔽 Função para gerar valor realista com base no tipo de sensor
+  // Função para gerar valor realista com base no tipo de sensor
   function generateSimulatedValue(type) {
     switch (type) {
       case "temperature":
@@ -31,7 +33,7 @@ cron.schedule("* * * * *", async () => {
 
     const sensors = await Sensor.find({ status: "active" });
 
-    // 🆕 1. Atualizar last_reading com valor simulado
+    //  Atualizar last_reading com valor simulado
     for (const sensor of sensors) {
       const simulatedValue = generateSimulatedValue(sensor.type);
 
@@ -39,8 +41,8 @@ cron.schedule("* * * * *", async () => {
         timestamp: now,
         values: {
           ...sensor.last_reading?.values,
-          [sensor.type]: simulatedValue
-        }
+          [sensor.type]: simulatedValue,
+        },
       };
 
       // Atualiza last_reading
@@ -50,10 +52,12 @@ cron.schedule("* * * * *", async () => {
       sensor.readings.push(reading);
 
       await sensor.save();
-      console.log(`📈 Sensor ${sensor._id} (${sensor.type} - ${sensor.location}) atualizado: ${simulatedValue}`);
+      console.log(
+        `Sensor ${sensor._id} (${sensor.type} - ${sensor.location}) atualizado: ${simulatedValue}`
+      );
     }
 
-    // 🔔 2. Verificar limites e enviar notificações
+    //  Verificar limites e enviar notificações
     const users = await User.find({ isVerified: true });
 
     for (const user of users) {
@@ -62,18 +66,21 @@ cron.schedule("* * * * *", async () => {
       for (const config of user.configs) {
         const { forecast_range, notification_type, alert_thresholds } = config;
 
-        // 🕒 Verificar se está na hora certa de notificar
+        // Verificar se está na hora certa de notificar
         if (
           (forecast_range === "hour" && currentMinute !== 0) ||
-          (forecast_range === "diary" && (currentHour !== 8 || currentMinute !== 0)) ||
-          (forecast_range === "weekly" && (currentDay !== 1 || currentHour !== 8 || currentMinute !== 0)) ||
-          (forecast_range === "monthly" && (currentDate !== 1 || currentHour !== 8 || currentMinute !== 0))
+          (forecast_range === "diary" &&
+            (currentHour !== 8 || currentMinute !== 0)) ||
+          (forecast_range === "weekly" &&
+            (currentDay !== 1 || currentHour !== 8 || currentMinute !== 0)) ||
+          (forecast_range === "monthly" &&
+            (currentDate !== 1 || currentHour !== 8 || currentMinute !== 0))
         ) {
           continue;
         }
 
         const location = config.location || user.location;
-        const locationSensors = sensors.filter(s => s.location === location);
+        const locationSensors = sensors.filter((s) => s.location === location);
 
         for (const sensor of locationSensors) {
           const last = sensor.last_reading?.values[sensor.type];
@@ -83,7 +90,9 @@ cron.schedule("* * * * *", async () => {
           if (!thresholds) continue;
 
           if (last < thresholds.min || last > thresholds.max) {
-            const msg = `⚠️ ${sensor.type.toUpperCase()} fora dos limites (${last}) no sensor ${sensor._id} (${sensor.location})`;
+            const msg = ` ${sensor.type.toUpperCase()} fora dos limites (${last}) no sensor ${
+              sensor._id
+            } (${sensor.location})`;
 
             if (notification_type === "email") {
               await sendEmail(user.email, "Alerta de Sensor", `<p>${msg}</p>`);
@@ -95,13 +104,12 @@ cron.schedule("* * * * *", async () => {
               });
             }
 
-            console.log(`🔔 Notificação enviada para ${user.email}: ${msg}`);
+            console.log(`Notificação enviada para ${user.email}: ${msg}`);
           }
         }
       }
     }
-
   } catch (err) {
-    console.error("❌ Erro no cron de notificações:", err.message);
+    console.error("Erro no cron de notificações:", err.message);
   }
 });
