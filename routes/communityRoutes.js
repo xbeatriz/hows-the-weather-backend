@@ -10,7 +10,8 @@ router.use(protect);
 // USER
 router.get("/:id", CommunityController.getCommunityById);
 router.get("/:id/posts", CommunityController.getCommunityPosts);
-router.post("/:id/posts", CommunityController.createCommunityPost);
+router.post("/:id/posts",protect, CommunityController.createCommunityPost);
+router.patch("/:id/posts/:post_id",protect, CommunityController.increasePostLikes);
 router.delete("/:id/posts/:post_id", CommunityController.deleteCommunityPost);
 
 router.get("/", CommunityController.getAllCommunities);

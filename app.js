@@ -12,7 +12,7 @@ import YAML from "yamljs";
 // Import routes from the index.js file in the routes folder
 import routes from "./routes/index.js";
 
-import errorHandler from "./middleware/errorMiddleware.js";
+import {errorHandler} from "./utils/errorHandler.js";
 
 import "./cron/sensorCron.js";
 

@@ -46,8 +46,8 @@ const postSchema = new mongoose.Schema({
     default: "waiting",
   },
   likes: {
-    type: Number,
-    default: 0,
+    type: [String],
+    default: [],
   },
 });
 

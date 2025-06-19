@@ -1,5 +1,5 @@
 import jwt from "../utils/jwt.js";
-import AppError from "../utils/errorHandler.js";
+import {AppError} from "../utils/errorHandler.js";
 import User from "../models/User.js";
 
 const protect = async (req, res, next) => {

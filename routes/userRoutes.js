@@ -16,7 +16,7 @@ router.get("/verify-email/:token", userController.verifyEmail);
 
 router.get("/me/configs", protect, userController.getConfigs);
 router.patch("/me/configs", protect, userController.updateConfigs);
-
+router.get('/:id/name',protect, userController.getUserNameById);
 // Admin
 router.get("/", protect, checkAdminToken, userController.getAllUsers);
 router.get("/:id", protect, checkAdminToken, userController.getUserById);

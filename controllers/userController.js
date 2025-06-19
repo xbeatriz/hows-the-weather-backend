@@ -1,6 +1,6 @@
 import User from "../models/User.js";
 import jwt from "../utils/jwt.js";
-import AppError from "../utils/errorHandler.js";
+import {AppError} from "../utils/errorHandler.js";
 import { sendEmail } from "../utils/sendEmail.js";
 
 class userController {
@@ -180,7 +180,16 @@ class userController {
       next(err);
     }
   }
+  async getUserNameById(req, res, next) {
+    try {
+      const user = await User.findById(req.params.id).select('name');
+      if (!user) return next(new AppError("Utilizador não encontrado", 404));
 
+      res.status(200).json({ name: user.name });
+    } catch (err) {
+      next(err);
+    }
+  }
   // Atualizar utilizador por ID (admin)
   async updateUserById(req, res, next) {
     try {
@@ -193,7 +202,6 @@ class userController {
       next(err);
     }
   }
-
   // Apagar utilizador por ID (admin)
   async deleteUserById(req, res, next) {
     try {

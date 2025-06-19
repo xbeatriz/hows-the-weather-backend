@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import AppError from "./errorHandler.js";
+import {AppError} from "./errorHandler.js";
 
 const generateAuthToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {

@@ -1,5 +1,5 @@
 import Sensor from "../models/Sensor.js";
-import AppError from "../utils/errorHandler.js";
+import {AppError} from "../utils/errorHandler.js";
 
 class SensorController {
   async createSensor(req, res, next) {

@@ -9,7 +9,7 @@ const router = express.Router();
 // Criar um novo sensor
 router.post("/", protect, checkAdminToken, sensorController.createSensor);
 // Listar todos os sensores
-router.get("/", protect, checkAdminToken, sensorController.getAllSensors);
+router.get("/", sensorController.getAllSensors);
 //query strings- paginação....... TESTEEEEEE PWII
 
 // Obter um sensor por ID

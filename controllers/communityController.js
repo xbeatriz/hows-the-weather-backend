@@ -1,5 +1,5 @@
 import Community from "../models/Community.js";
-import AppError from "../utils/errorHandler.js";
+import {AppError} from "../utils/errorHandler.js";
 import mongoose from "mongoose";
 
 class CommunityController {
@@ -62,6 +62,30 @@ class CommunityController {
       next(error);
     }
   }
+async increasePostLikes(req, res, next) {
+  try {
+    const { id: communityId, post_id: postId } = req.params;
+    const { user_id } = req.body;
+
+    const community = await Community.findById(communityId);
+    if (!community) return next(new AppError("Comunidade não encontrada", 404));
+
+    const post = community.community_posts.id(postId);
+    if (!post) return next(new AppError("Publicação não encontrada", 404));
+
+    // Verifica se o utilizador já deu like
+    if (post.likes.includes(user_id)) {
+      return next(new AppError("Já deste like nesta publicação.", 400));
+    }
+
+    post.likes.push(user_id);
+    await community.save();
+
+    res.status(200).json({ message: "Like adicionado com sucesso", post });
+  } catch (err) {
+    next(err);
+  }
+}
 
   async getCommunityById(req, res, next) {
     try {
@@ -131,7 +155,6 @@ class CommunityController {
     try {
       const { id } = req.params;
       const {
-        post_id,
         user_id,
         sensor_id,
         description,
@@ -142,10 +165,6 @@ class CommunityController {
 
       if (!mongoose.Types.ObjectId.isValid(id)) {
         return next(new AppError("ID de comunidade inválido", 400));
-      }
-
-      if (!post_id || !mongoose.Types.ObjectId.isValid(post_id)) {
-        return next(new AppError("post_id inválido ou em falta", 400));
       }
 
       if (!user_id || !mongoose.Types.ObjectId.isValid(user_id)) {
@@ -167,9 +186,10 @@ class CommunityController {
 
       //Força o status para "waiting" sempre
       const finalStatus = "waiting";
+      const newPostId = new mongoose.Types.ObjectId();
 
       community.community_posts.push({
-        post_id,
+        post_id: newPostId,
         user_id,
         sensor_id,
         description,
