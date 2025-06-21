@@ -67,13 +67,25 @@ async increasePostLikes(req, res, next) {
     const { id: communityId, post_id: postId } = req.params;
     const { user_id } = req.body;
 
+    if (!mongoose.Types.ObjectId.isValid(communityId) || !mongoose.Types.ObjectId.isValid(postId) || !mongoose.Types.ObjectId.isValid(user_id)) {
+      return next(new AppError("ID(s) inválido(s)", 400));
+    }
+
     const community = await Community.findById(communityId);
-    if (!community) return next(new AppError("Comunidade não encontrada", 404));
+    if (!community) {
+      return next(new AppError("Comunidade não encontrada", 404));
+    }
 
-    const post = community.community_posts.id(postId);
-    if (!post) return next(new AppError("Publicação não encontrada", 404));
+    // Encontra o post pelo post_id na lista de posts da comunidade
+    const post = community.community_posts.find(
+      (p) => p.post_id.toString() === postId
+    );
 
-    // Verifica se o utilizador já deu like
+    if (!post) {
+      return next(new AppError("Publicação não encontrada", 404));
+    }
+
+    // Verifica se o user já deu like
     if (post.likes.includes(user_id)) {
       return next(new AppError("Já deste like nesta publicação.", 400));
     }
@@ -86,6 +98,7 @@ async increasePostLikes(req, res, next) {
     next(err);
   }
 }
+
 
   async getCommunityById(req, res, next) {
     try {
@@ -212,50 +225,46 @@ async increasePostLikes(req, res, next) {
   }
 
   // PATCH /communities/:community_id/posts/:post_id/approve
-  async approveCommunityPost(req, res, next) {
-    try {
-      const { community_id, post_id } = req.params;
+async approveCommunityPost(req, res, next) {
+  try {
+    const { id: community_id, post_id } = req.params;
 
-      if (
-        !mongoose.Types.ObjectId.isValid(community_id) ||
-        !mongoose.Types.ObjectId.isValid(post_id)
-      ) {
-        return next(new AppError("Invalid ID(s)", 400));
-      }
-
-      if (req.user.role !== "admin") {
-        return next(
-          new AppError(
-            "Não autorizado. Apenas administradores podem aprovar posts.",
-            403
-          )
-        );
-      }
-
-      const community = await Community.findById(community_id);
-      if (!community) {
-        return next(new AppError("Comunidade não encontrada", 404));
-      }
-
-      const post = community.community_posts.find(
-        (p) => p.post_id.toString() === post_id
-      );
-
-      if (!post) {
-        return next(new AppError("Post não encontrado", 404));
-      }
-
-      post.status = "approved";
-      await community.save();
-
-      res.status(200).json({
-        message: "Post aprovado com sucesso.",
-        data: post,
-      });
-    } catch (error) {
-      next(error);
+    if (
+      !mongoose.Types.ObjectId.isValid(community_id) ||
+      !mongoose.Types.ObjectId.isValid(post_id)
+    ) {
+      return next(new AppError("Invalid ID(s)", 400));
     }
+
+    if (req.user.role !== "admin") {
+      return next(new AppError("Não autorizado. Apenas administradores podem aprovar posts.", 403));
+    }
+
+    const community = await Community.findById(community_id);
+    if (!community) {
+      return next(new AppError("Comunidade não encontrada", 404));
+    }
+
+    const post = community.community_posts.find(
+      (p) => p.post_id.toString() === post_id
+    );
+
+    if (!post) {
+      return next(new AppError("Post não encontrado", 404));
+    }
+
+    post.status = "approved";
+    await community.save();
+
+    res.status(200).json({
+      message: "Post aprovado com sucesso.",
+      data: post,
+    });
+  } catch (error) {
+    next(error);
   }
+}
+
 
   // DELETE /communities/:id/posts/:post_id - apagar post (normal user ou admin)
   async deleteCommunityPost(req, res, next) {
