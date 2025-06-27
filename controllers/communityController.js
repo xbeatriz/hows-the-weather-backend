@@ -68,12 +68,14 @@ async increasePostLikes(req, res, next) {
     const { community_id: communityId, post_id: postId } = req.params;
     const { user_id } = req.body;
 
-    if (
-      !mongoose.Types.ObjectId.isValid(communityId) ||
-      !mongoose.Types.ObjectId.isValid(postId) ||
-      !mongoose.Types.ObjectId.isValid(user_id)
-    ) {
-      return next(new AppError("ID(s) inválido(s)", 400));
+    if (!mongoose.Types.ObjectId.isValid(communityId)) {
+      return next(new AppError("ID da comunidade inválido", 400));
+    }
+    if (!mongoose.Types.ObjectId.isValid(postId)) {
+      return next(new AppError("ID do post inválido", 400));
+    }
+    if (!mongoose.Types.ObjectId.isValid(user_id)) {
+      return next(new AppError("ID do utilizador inválido", 400));
     }
 
     const community = await Community.findById(communityId);
