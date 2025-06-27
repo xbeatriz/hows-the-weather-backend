@@ -11,18 +11,40 @@ cron.schedule("* * * * *", async () => {
   );
 
   // Função para gerar valor realista com base no tipo de sensor
-  function generateSimulatedValue(type) {
-    switch (type) {
-      case "temperature":
-        return parseFloat((Math.random() * (35 - 15) + 15).toFixed(2)); // 15–35°C
-      case "humidity":
-        return parseFloat((Math.random() * (70 - 30) + 30).toFixed(2)); // 30–70%
-      case "gas":
-        return parseFloat((Math.random() * (800 - 200) + 200).toFixed(2)); // 200–800 ppm
-      default:
-        return parseFloat((Math.random() * 100).toFixed(2)); // fallback
-    }
+function generateSimulatedValue(type) {
+  const isUnhealthy = Math.random() < 0.2; // 20% de chance de gerar valor nocivo
+
+  switch (type) {
+    case "temperature":
+      if (isUnhealthy) {
+        // abaixo de 10°C ou acima de 40°C
+        return Math.random() < 0.5
+          ? parseFloat((Math.random() * (10 - (-5)) - 5).toFixed(2)) // -5 a 10
+          : parseFloat((Math.random() * (50 - 40) + 40).toFixed(2)); // 40 a 50
+      }
+      return parseFloat((Math.random() * (35 - 15) + 15).toFixed(2)); // 15–35°C
+
+    case "humidity":
+      if (isUnhealthy) {
+        // abaixo de 20% ou acima de 80%
+        return Math.random() < 0.5
+          ? parseFloat((Math.random() * (20 - 5) + 5).toFixed(2))  // 5–20%
+          : parseFloat((Math.random() * (100 - 80) + 80).toFixed(2)); // 80–100%
+      }
+      return parseFloat((Math.random() * (70 - 30) + 30).toFixed(2)); // 30–70%
+
+    case "gas":
+      if (isUnhealthy) {
+        // acima de 800 até 1500 ppm
+        return parseFloat((Math.random() * (1500 - 800) + 800).toFixed(2));
+      }
+      return parseFloat((Math.random() * (800 - 200) + 200).toFixed(2)); // 200–800 ppm
+
+    default:
+      return parseFloat((Math.random() * 100).toFixed(2)); // fallback
   }
+}
+
 
   try {
     const now = new Date();
