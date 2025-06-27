@@ -64,10 +64,15 @@ class CommunityController {
   }
 async increasePostLikes(req, res, next) {
   try {
-    const { id: communityId, post_id: postId } = req.params;
+    // Corrigir o nome do parâmetro para coincidir com a rota:
+    const { community_id: communityId, post_id: postId } = req.params;
     const { user_id } = req.body;
 
-    if (!mongoose.Types.ObjectId.isValid(communityId) || !mongoose.Types.ObjectId.isValid(postId) || !mongoose.Types.ObjectId.isValid(user_id)) {
+    if (
+      !mongoose.Types.ObjectId.isValid(communityId) || 
+      !mongoose.Types.ObjectId.isValid(postId) || 
+      !mongoose.Types.ObjectId.isValid(user_id)
+    ) {
       return next(new AppError("ID(s) inválido(s)", 400));
     }
 
@@ -76,7 +81,7 @@ async increasePostLikes(req, res, next) {
       return next(new AppError("Comunidade não encontrada", 404));
     }
 
-    // Encontra o post pelo post_id na lista de posts da comunidade
+    // Procurar pelo post pelo campo post_id, não _id
     const post = community.community_posts.find(
       (p) => p.post_id.toString() === postId
     );
