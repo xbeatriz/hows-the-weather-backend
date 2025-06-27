@@ -65,8 +65,9 @@ class CommunityController {
 async increasePostLikes(req, res, next) {
   try {
     // CORREÇÃO AQUI ⬇
-    const { community_id: communityId, post_id: postId } = req.params;
+    const { id: communityId, post_id: postId } = req.params;
     const { user_id } = req.body;
+console.log('req.params.community_id:', req.params.community_id);
 
     if (!mongoose.Types.ObjectId.isValid(communityId)) {
       return next(new AppError("ID da comunidade inválido", 400));
